@@ -7,13 +7,18 @@ class AppTheme {
 
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    colorSchemeSeed: AppColors.primary,
-    brightness: Brightness.light,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+    ),
+    scaffoldBackgroundColor: AppColors.background,
   );
 
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    colorSchemeSeed: AppColors.primary,
-    brightness: Brightness.dark,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.dark,
+    ),
   );
 }
