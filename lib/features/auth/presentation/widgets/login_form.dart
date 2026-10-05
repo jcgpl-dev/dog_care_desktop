@@ -54,77 +54,100 @@ class _LoginFormState extends State<LoginForm> {
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 440),
-              child: Card(
-                color: const Color(0xFF004D40).withOpacity(0.94),
-                elevation: 12,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildLogo(),
+              child: Column(
+                children: [
+                  _buildLogo(),
 
-                        const SizedBox(height: 16),
-
-                        const Text(
-                          'Sign in to your account',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        _buildUsernameField(),
-
-                        const SizedBox(height: 16),
-
-                        _buildPasswordField(),
-
-                        const SizedBox(height: 24),
-
-                        _buildSignInButton(),
-
-                        const SizedBox(height: 16),
-
-                        TextButton(
-                          onPressed: () {
-                            // Registration will be implemented later.
-                          },
-                          child: const Text.rich(
-                            TextSpan(
-                              text: "Don't have an account? ",
-                              style: TextStyle(color: Colors.white70),
-                              children: [
-                                TextSpan(
-                                  text: 'Register here',
-                                  style: TextStyle(
-                                    color: Color(0xFF00E676),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        const Text(
-                          'Default admin: admin / admin123',
-                          style: TextStyle(color: Colors.white54, fontSize: 11),
-                        ),
-                      ],
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Dog Care',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ),
+                  const Text(
+                    'Dog Care & Monitoring System',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  Card(
+                    color: const Color(0xFF004D40).withOpacity(0.94),
+                    elevation: 12,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Sign in to your account',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            _buildUsernameField(),
+
+                            const SizedBox(height: 16),
+
+                            _buildPasswordField(),
+
+                            const SizedBox(height: 24),
+
+                            _buildSignInButton(),
+
+                            const SizedBox(height: 16),
+
+                            TextButton(
+                              onPressed: () {
+                                // Registration will be implemented later.
+                              },
+                              child: const Text.rich(
+                                TextSpan(
+                                  text: "Don't have an account? ",
+                                  style: TextStyle(color: Colors.white70),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Register here',
+                                      style: TextStyle(
+                                        color: Color(0xFF00E676),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            const Text(
+                              'Default admin: admin / admin123',
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
