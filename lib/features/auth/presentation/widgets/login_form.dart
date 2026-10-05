@@ -44,7 +44,7 @@ class _LoginFormState extends State<LoginForm> {
       fit: StackFit.expand,
       children: [
         // Background
-        Image.asset('assets/images/login.jpg', fit: BoxFit.cover),
+        Image.asset('assets/images/login_bg.webp', fit: BoxFit.cover),
 
         // Dark overlay
         Container(color: Colors.black.withOpacity(0.45)),
