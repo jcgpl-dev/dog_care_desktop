@@ -1,4 +1,5 @@
 import 'package:dog_care_desktop/config/window/app_window.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/app_window/app_window_frame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,7 +40,7 @@ class DogCareApp extends StatelessWidget {
 
         theme: AppTheme.lightTheme,
 
-        home: const LoginPage(),
+        home: const AppWindowFrame(child: LoginPage()),
       ),
     );
   }

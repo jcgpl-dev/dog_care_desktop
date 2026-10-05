@@ -72,7 +72,7 @@ class _LoginFormState extends State<LoginForm> {
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -80,7 +80,7 @@ class _LoginFormState extends State<LoginForm> {
                     color: const Color(0xFF004D40).withOpacity(0.94),
                     elevation: 12,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(32),
@@ -88,14 +88,20 @@ class _LoginFormState extends State<LoginForm> {
                         key: _formKey,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
+
                           children: [
-                            const Text(
-                              'Sign in to your account',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Sign in to your account',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
 
                             const SizedBox(height: 24),
