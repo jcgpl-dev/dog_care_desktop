@@ -149,7 +149,9 @@ class _LoginFormState extends State<LoginForm> {
                               builder: (context, state) {
                                 final isLoading = state is AuthLoading;
                                 return AppButton(
-                                  label: 'Login',
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: AppColors.textPrimary,
+                                  label: 'Sign in',
                                   onPressed: () {
                                     isLoading ? null : _submit;
                                   },

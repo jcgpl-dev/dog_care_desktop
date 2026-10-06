@@ -11,7 +11,7 @@ class AppTitleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 44,
+      height: 40,
       child: Row(
         children: [
           Expanded(

@@ -9,12 +9,18 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final Widget? icon;
 
+  // Appearance
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+
   const AppButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.isLoading = false,
     this.icon,
+    this.backgroundColor,
+    this.foregroundColor,
   });
 
   @override
@@ -24,7 +30,13 @@ class AppButton extends StatelessWidget {
       height: AppDimensions.buttonHeight,
       child: FilledButton.icon(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all(
+          backgroundColor: backgroundColor != null
+              ? WidgetStatePropertyAll(backgroundColor)
+              : null,
+          foregroundColor: foregroundColor != null
+              ? WidgetStatePropertyAll(foregroundColor)
+              : null,
+          shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
             ),
@@ -40,7 +52,7 @@ class AppButton extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : Text(label, style: AppTextStyles.labelLarge),
+            : Text(label, style: AppTextStyles.labelLarge, ),
       ),
     );
   }
