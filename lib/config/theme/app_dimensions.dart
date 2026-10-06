@@ -42,4 +42,10 @@ class AppDimensions {
   // Layout
   static const sidebarWidth = 250.0;
   static const maxContentWidth = 1440.0;
+
+  static const loginLogoSize = 64.0;
+  static const loginLogoRadius = 18.0;
+  static const loginLogoIconSize = 36.0;
+  static const loginFormMaxWidth = 440.0;
+  static const loginCardPadding = 32.0;
 }
