@@ -5,6 +5,6 @@ class HealthRecordsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Health Records Module')));
+    return const Scaffold(body: Center(child: Text('Health Records Page')));
   }
 }

@@ -28,15 +28,28 @@ Future<void> main() async {
   });
 }
 
-// lib/main.dart
-class DogCareApp extends StatelessWidget {
+class DogCareApp extends StatefulWidget {
   const DogCareApp({super.key});
+
+  @override
+  State<DogCareApp> createState() => _DogCareAppState();
+}
+
+class _DogCareAppState extends State<DogCareApp> {
+  late final AuthBloc _authBloc;
+  late final router = AppRouter.createRouter(_authBloc);
+
+  @override
+  void initState() {
+    super.initState();
+    _authBloc = sl<AuthBloc>();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<AuthBloc>()),
+        BlocProvider<AuthBloc>.value(value: _authBloc),
         BlocProvider(create: (_) => sl<ThemeCubit>()),
         BlocProvider(create: (_) => sl<SidebarCubit>()),
       ],
@@ -48,7 +61,7 @@ class DogCareApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeState.themeMode,
-            routerConfig: AppRouter.router,
+            routerConfig: router,
           );
         },
       ),

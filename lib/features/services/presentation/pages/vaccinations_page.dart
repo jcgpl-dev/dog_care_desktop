@@ -5,6 +5,6 @@ class VaccinationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Vaccinations Module')));
+    return const Scaffold(body: Center(child: Text('Vaccinations Page')));
   }
 }

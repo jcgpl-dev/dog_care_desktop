@@ -1,4 +1,5 @@
 import 'package:dog_care_desktop/app/presentation/shell/cubit/sidebar_cubit.dart';
+import 'package:dog_care_desktop/features/auth/domain/usecases/logout.dart';
 import 'package:get_it/get_it.dart';
 
 import 'features/auth/data/datasources/auth_datasource.dart';
@@ -18,10 +19,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SidebarCubit());
 
   // BLoC
-  sl.registerFactory(() => AuthBloc(login: sl()));
+  sl.registerFactory(() => AuthBloc(login: sl(), logout: sl()));
 
   // Use cases
   sl.registerLazySingleton(() => Login(sl()));
+  sl.registerLazySingleton(() => Logout(sl()));
 
   // Repository (depends on AuthDataSource interface)
   sl.registerLazySingleton<AuthRepository>(

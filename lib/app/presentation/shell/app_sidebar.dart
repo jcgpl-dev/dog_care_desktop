@@ -146,7 +146,7 @@ class _AppSidebarState extends State<AppSidebar> {
                   ],
                 ),
               ),
-              _buildBottomProfileCard(context, isCollapsed, isDarkMode),
+              // _buildBottomProfileCard(context, isCollapsed, isDarkMode),
             ],
           ),
         );

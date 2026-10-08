@@ -5,6 +5,6 @@ class DogsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('Dogs Management Module')));
+    return const Scaffold(body: Center(child: Text('Dogs Management Page')));
   }
 }

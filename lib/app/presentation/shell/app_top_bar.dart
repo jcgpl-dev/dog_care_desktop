@@ -1,5 +1,6 @@
 // lib/app/presentation/shell/app_top_bar.dart
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:dog_care_desktop/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -126,34 +127,40 @@ class AppTopBar extends StatelessWidget {
   }
 
   Widget _buildUserMenu(BuildContext context) {
-    return PopupMenuButton<String>(
-      tooltip: 'Account',
-      onSelected: (value) {
-        if (value == 'logout') {
-          // Connected to AuthBloc logout logic
-        }
-      },
-      itemBuilder: (context) => const [
-        PopupMenuItem(value: 'profile', child: Text('Profile')),
-        PopupMenuItem(value: 'logout', child: Text('Sign out')),
-      ],
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircleAvatar(
-            radius: 14,
-            backgroundColor: AppColors.primaryContainer,
-            child: const Icon(
-              Icons.person_outline,
-              size: 16,
-              color: AppColors.primary,
-            ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        final userName = state is AuthAuthenticated ? state.user.name : 'User';
+
+        return PopupMenuButton<String>(
+          tooltip: 'Account',
+          onSelected: (value) {
+            if (value == 'logout') {
+              context.read<AuthBloc>().add(const AuthLogoutRequested());
+            }
+          },
+          itemBuilder: (context) => const [
+            PopupMenuItem(value: 'profile', child: Text('Profile')),
+            PopupMenuItem(value: 'logout', child: Text('Sign out')),
+          ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircleAvatar(
+                radius: 14,
+                backgroundColor: AppColors.primaryContainer,
+                child: const Icon(
+                  Icons.person_outline,
+                  size: 16,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: AppDimensions.spacing8),
+              Text(userName, style: Theme.of(context).textTheme.labelLarge),
+              const Icon(Icons.keyboard_arrow_down, size: 18),
+            ],
           ),
-          const SizedBox(width: AppDimensions.spacing8),
-          Text('Administrator', style: Theme.of(context).textTheme.labelLarge),
-          const Icon(Icons.keyboard_arrow_down, size: 18),
-        ],
-      ),
+        );
+      },
     );
   }
 }

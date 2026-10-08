@@ -5,6 +5,6 @@ class UserManagementPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: Text('User Management Module')));
+    return const Scaffold(body: Center(child: Text('User Management Page')));
   }
 }
