@@ -1,4 +1,3 @@
-// lib/app/presentation/shell/app_top_bar.dart
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dog_care_desktop/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +21,8 @@ class AppTopBar extends StatelessWidget {
         return 'Dogs Management';
       case '/health-records':
         return 'Health Records';
+      case '/services':
+        return 'Services';
       case '/vaccinations':
         return 'Vaccinations';
       case '/deworming':

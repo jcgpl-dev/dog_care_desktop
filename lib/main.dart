@@ -2,6 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dog_care_desktop/app/presentation/shell/cubit/sidebar_cubit.dart';
 import 'package:dog_care_desktop/config/theme/cubit/theme_cubit.dart';
 import 'package:dog_care_desktop/config/theme/cubit/theme_state.dart';
+import 'package:dog_care_desktop/features/dogs/presentation/bloc/dogs_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,6 +53,7 @@ class _DogCareAppState extends State<DogCareApp> {
         BlocProvider<AuthBloc>.value(value: _authBloc),
         BlocProvider(create: (_) => sl<ThemeCubit>()),
         BlocProvider(create: (_) => sl<SidebarCubit>()),
+        BlocProvider(create: (_) => sl<DogsBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {

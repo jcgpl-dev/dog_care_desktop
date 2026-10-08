@@ -1,5 +1,12 @@
 import 'package:dog_care_desktop/app/presentation/shell/cubit/sidebar_cubit.dart';
 import 'package:dog_care_desktop/features/auth/domain/usecases/logout.dart';
+import 'package:dog_care_desktop/features/dogs/data/datasources/local/mock_dogs_datasource.dart';
+import 'package:dog_care_desktop/features/dogs/data/repositories/dogs_repository_impl.dart';
+import 'package:dog_care_desktop/features/dogs/domain/repositories/dogs_repository.dart';
+import 'package:dog_care_desktop/features/dogs/domain/usecases/delete_dog.dart';
+import 'package:dog_care_desktop/features/dogs/domain/usecases/get_dogs.dart';
+import 'package:dog_care_desktop/features/dogs/domain/usecases/register_dog.dart';
+import 'package:dog_care_desktop/features/dogs/presentation/bloc/dogs_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import 'features/auth/data/datasources/auth_datasource.dart';
@@ -31,4 +38,19 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<AuthDataSource>(() => MockAuthDataSource());
+
+  // Features - Dogs
+  sl.registerFactory(
+    () => DogsBloc(getDogs: sl(), registerDog: sl(), deleteDog: sl()),
+  );
+
+  sl.registerLazySingleton(() => GetDogs(sl()));
+  sl.registerLazySingleton(() => RegisterDog(sl()));
+  sl.registerLazySingleton(() => DeleteDog(sl()));
+
+  sl.registerLazySingleton<DogsRepository>(
+    () => DogsRepositoryImpl(dataSource: sl()),
+  );
+
+  sl.registerLazySingleton<DogsDataSource>(() => MockDogsDataSource());
 }

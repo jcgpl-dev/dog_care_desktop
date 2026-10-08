@@ -1,3 +1,4 @@
+import 'package:dog_care_desktop/features/services/presentation/pages/services_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -66,6 +67,11 @@ class AppRouter {
               path: '/health-records',
               pageBuilder: (context, state) =>
                   const NoTransitionPage(child: HealthRecordsPage()),
+            ),
+            GoRoute(
+              path: '/services',
+              pageBuilder: (context, state) =>
+                  const NoTransitionPage(child: ServicesPage()),
             ),
             GoRoute(
               path: '/vaccinations',

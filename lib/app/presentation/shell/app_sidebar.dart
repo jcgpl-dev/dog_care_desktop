@@ -1,4 +1,3 @@
-// lib/app/presentation/shell/app_sidebar.dart
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,12 +27,13 @@ class _AppSidebarState extends State<AppSidebar> {
     AppNavigationItem(label: 'Dogs', icon: Icons.pets_outlined, route: '/dogs'),
     AppNavigationItem(
       label: 'Health Records',
-      icon: Icons.favorite_border_rounded,
+      icon: Icons.monitor_heart_outlined,
       route: '/health-records',
     ),
     AppNavigationItem(
       label: 'Services',
       icon: Icons.favorite_outline_rounded,
+      route: '/services', //main dawg
       children: [
         AppNavigationItem(
           label: 'Vaccinations',
@@ -235,7 +235,7 @@ class _AppSidebarState extends State<AppSidebar> {
           item: parent,
           isCollapsed: false,
           isExpanded: _isServicesExpanded,
-          onTap: () {
+          onChevronTap: () {
             setState(() {
               _isServicesExpanded = !_isServicesExpanded;
             });
@@ -335,6 +335,7 @@ class _SidebarItem extends StatelessWidget {
   final bool isSubItem;
   final bool? isExpanded;
   final VoidCallback? onTap;
+  final VoidCallback? onChevronTap; // 👈 Dedicated chevron callback
 
   const _SidebarItem({
     required this.item,
@@ -342,6 +343,7 @@ class _SidebarItem extends StatelessWidget {
     this.isSubItem = false,
     this.isExpanded,
     this.onTap,
+    this.onChevronTap,
   });
 
   @override
@@ -349,7 +351,6 @@ class _SidebarItem extends StatelessWidget {
     final theme = Theme.of(context);
     final isDarkMode = theme.brightness == Brightness.dark;
 
-    // Resolve current URI to highlight active nav selection
     final currentPath = GoRouterState.of(context).matchedLocation;
     final isSelected = item.route != null && currentPath == item.route;
 
@@ -417,15 +418,15 @@ class _SidebarItem extends StatelessWidget {
                       ),
                     ),
                     if (isExpanded != null)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          right: AppDimensions.spacing12,
-                        ),
-                        child: Icon(
+                      IconButton(
+                        splashRadius: 16,
+                        iconSize: 18,
+                        visualDensity: VisualDensity.compact,
+                        onPressed: onChevronTap,
+                        icon: Icon(
                           isExpanded!
                               ? Icons.keyboard_arrow_up
                               : Icons.keyboard_arrow_down,
-                          size: 18,
                           color: unselectedIconColor,
                         ),
                       ),
