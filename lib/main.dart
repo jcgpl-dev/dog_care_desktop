@@ -1,4 +1,7 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:dog_care_desktop/app/presentation/shell/cubit/sidebar_cubit.dart';
+import 'package:dog_care_desktop/config/theme/cubit/theme_cubit.dart';
+import 'package:dog_care_desktop/config/theme/cubit/theme_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,18 +28,29 @@ Future<void> main() async {
   });
 }
 
+// lib/main.dart
 class DogCareApp extends StatelessWidget {
   const DogCareApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AuthBloc>(),
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Dog Care & Monitoring System',
-        theme: AppTheme.lightTheme,
-        routerConfig: AppRouter.router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<AuthBloc>()),
+        BlocProvider(create: (_) => sl<ThemeCubit>()),
+        BlocProvider(create: (_) => sl<SidebarCubit>()),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            title: 'Dog Care & Monitoring System',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeState.themeMode,
+            routerConfig: AppRouter.router,
+          );
+        },
       ),
     );
   }

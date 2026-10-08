@@ -1,8 +1,11 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../config/theme/app_colors.dart';
 import '../../../config/theme/app_dimensions.dart';
 import 'app_navigation_item.dart';
+import 'cubit/sidebar_cubit.dart';
 
 class AppSidebar extends StatelessWidget {
   const AppSidebar({super.key});
@@ -44,53 +47,103 @@ class AppSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: AppDimensions.sidebarWidth,
-      color: AppColors.surface,
-      child: Column(
-        children: [
-          _buildHeader(context),
-          const Divider(height: 1),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.spacing12,
-                vertical: AppDimensions.spacing16,
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
+    return BlocBuilder<SidebarCubit, bool>(
+      builder: (context, isCollapsed) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          width: isCollapsed
+              ? AppDimensions.collapsedSidebarWidth
+              : AppDimensions.sidebarWidth,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            border: Border(
+              right: BorderSide(
+                color: isDarkMode ? AppColors.darkBorder : AppColors.border,
               ),
-              children: [for (final item in _items) _SidebarItem(item: item)],
             ),
           ),
-        ],
-      ),
+          child: Column(
+            children: [
+              _buildHeader(context, isDarkMode, isCollapsed),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacing12,
+                    vertical: AppDimensions.spacing16,
+                  ),
+                  children: [
+                    for (final item in _items)
+                      _SidebarItem(item: item, isCollapsed: isCollapsed),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return SizedBox(
-      height: 72,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.spacing16,
+  Widget _buildHeader(BuildContext context, bool isDarkMode, bool isCollapsed) {
+    return Container(
+      height: AppDimensions.sidebarHeaderHeight,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: isDarkMode ? AppColors.darkBorder : AppColors.border,
+          ),
         ),
-        child: Row(
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: AppColors.primaryContainer,
-                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+      ),
+      child: MoveWindow(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.spacing12,
+          ),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusSmall,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.pets,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.surface,
+                    ),
+                  ),
+                ),
               ),
-              child: const Icon(Icons.pets, color: AppColors.primary),
-            ),
-            const SizedBox(width: AppDimensions.spacing12),
-            Expanded(
-              child: Text(
-                'Dog Care',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-          ],
+
+              if (!isCollapsed) ...[
+                const SizedBox(width: AppDimensions.spacing8),
+                Expanded(
+                  child: Text(
+                    'Dog Care',
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
@@ -99,49 +152,71 @@ class AppSidebar extends StatelessWidget {
 
 class _SidebarItem extends StatelessWidget {
   final AppNavigationItem item;
+  final bool isCollapsed;
 
-  const _SidebarItem({required this.item});
+  const _SidebarItem({required this.item, required this.isCollapsed});
 
   @override
   Widget build(BuildContext context) {
-    // We'll replace this with go_router's current-route
-    // detection once routing is connected.
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
     final isSelected = item.route == '/dashboard';
 
-    return Padding(
+    final activeBgColor = isDarkMode
+        ? AppColors.primary.withOpacity(0.18)
+        : AppColors.primaryContainer;
+    final activeItemColor = isDarkMode
+        ? AppColors.primaryContainer
+        : AppColors.primary;
+    final unselectedIconColor = isDarkMode
+        ? AppColors.darkTextSecondary
+        : AppColors.textSecondary;
+
+    Widget itemTile = Padding(
       padding: const EdgeInsets.only(bottom: AppDimensions.spacing4),
       child: Material(
-        color: isSelected ? AppColors.primaryContainer : Colors.transparent,
+        color: isSelected ? activeBgColor : Colors.transparent,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
         child: InkWell(
           borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-          onTap: () {
-            // Routing will be connected in the next step.
-          },
+          onTap: () {},
           child: SizedBox(
-            height: 44,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.spacing12,
-              ),
+            height: 40,
+            child: ClipRect(
               child: Row(
                 children: [
-                  Icon(
-                    item.icon,
-                    size: 20,
-                    color: isSelected
-                        ? AppColors.primary
-                        : AppColors.textSecondary,
-                  ),
-                  const SizedBox(width: AppDimensions.spacing12),
-                  Text(
-                    item.label,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textPrimary,
+                  SizedBox(
+                    width: 44,
+                    height: 40,
+                    child: Center(
+                      child: Icon(
+                        item.icon,
+                        size: 20,
+                        color: isSelected
+                            ? activeItemColor
+                            : unselectedIconColor,
+                      ),
                     ),
                   ),
+
+                  if (!isCollapsed)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          right: AppDimensions.spacing8,
+                        ),
+                        child: Text(
+                          item.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: isSelected
+                                ? activeItemColor
+                                : theme.textTheme.bodyMedium?.color,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -149,5 +224,16 @@ class _SidebarItem extends StatelessWidget {
         ),
       ),
     );
+
+    if (isCollapsed) {
+      return Tooltip(
+        message: item.label,
+        preferBelow: false,
+        verticalOffset: 0,
+        child: itemTile,
+      );
+    }
+
+    return itemTile;
   }
 }

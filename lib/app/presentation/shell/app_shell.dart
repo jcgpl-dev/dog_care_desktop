@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/presentation/widgets/app_window/app_window_frame.dart';
 import 'app_sidebar.dart';
-
 import 'app_top_bar.dart';
 
 class AppShell extends StatelessWidget {
@@ -12,8 +10,8 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppWindowFrame(
-      child: Row(
+    return Scaffold(
+      body: Row(
         children: [
           const AppSidebar(),
           Expanded(

@@ -39,10 +39,15 @@ class AppDimensions {
   static const buttonHeight = 44.0;
   static const inputHeight = 48.0;
 
-  // Layout
+  // Layout & Desktop Shell
   static const sidebarWidth = 250.0;
+  static const collapsedSidebarWidth = 72.0;
+  static const topBarHeight = 52.0;
+  static const sidebarHeaderHeight = 52.0;
+  static const windowTitleBarHeight = 40.0;
   static const maxContentWidth = 1440.0;
 
+  // Login
   static const loginLogoSize = 64.0;
   static const loginLogoRadius = 18.0;
   static const loginLogoIconSize = 36.0;

@@ -12,9 +12,10 @@ class AppColors {
 
   // Surfaces
 
-  static const background = Color(0xFFF8FAF8);
-  static const surface = Color(0xFFFFFFFF);
-  static const surfaceVariant = Color(0xFFF0F2F0);
+  static const background = Color(0xFFF4F7F4);
+
+  static const surface = Color(0xFFFAFCEF);
+  static const surfaceVariant = Color(0xFFE8EFE9);
 
   // Text
 
