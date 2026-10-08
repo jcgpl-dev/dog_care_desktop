@@ -97,7 +97,10 @@ class AppTopBar extends StatelessWidget {
             splashRadius: 18,
             iconSize: 20,
             onPressed: () => context.read<SidebarCubit>().toggleSidebar(),
-            icon: Icon(isCollapsed ? Icons.menu_open : Icons.menu),
+            icon: Transform.flip(
+              flipX: isCollapsed,
+              child: Icon(isCollapsed ? Icons.menu_open : Icons.menu),
+            ),
           ),
         );
       },
