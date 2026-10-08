@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../config/theme/app_colors.dart';
+import '../../../../core/presentation/widgets/app_window/app_window_frame.dart';
 import '../bloc/auth_bloc.dart';
 import '../widgets/auth_background.dart';
 import '../widgets/login_footer.dart';
@@ -16,7 +17,12 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: _onAuthStateChanged,
-      child: const Scaffold(body: _LoginContent()),
+      child: const AppWindowFrame(
+        isDarkTitleBar: true,
+        backgroundColor: Colors.transparent,
+        extendBodyBehindTitleBar: true,
+        child: _LoginContent(),
+      ),
     );
   }
 
@@ -53,7 +59,12 @@ class _LoginContent extends StatelessWidget {
         const AuthBackground(child: SizedBox.expand()),
         Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.only(
+              top: 64,
+              bottom: 24,
+              left: 24,
+              right: 24,
+            ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 500),
               child: const Column(

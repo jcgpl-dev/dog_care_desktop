@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 enum UserRole { admin, staff }
 
-class User {
+class User extends Equatable {
   final int id;
   final String username;
   final String name;
@@ -12,4 +14,7 @@ class User {
     required this.name,
     required this.role,
   });
+
+  @override
+  List<Object?> get props => [id, username, name, role];
 }

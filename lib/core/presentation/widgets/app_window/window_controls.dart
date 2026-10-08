@@ -9,6 +9,7 @@ class WindowControls extends StatefulWidget {
   final Color? minimizeColor;
   final Color? maximizeColor;
   final Color? closeColor;
+  final bool isDark;
 
   const WindowControls({
     super.key,
@@ -16,6 +17,7 @@ class WindowControls extends StatefulWidget {
     this.minimizeColor,
     this.maximizeColor,
     this.closeColor,
+    this.isDark = false,
   });
 
   @override
@@ -29,10 +31,15 @@ class _WindowControlsState extends State<WindowControls>
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addObserver(this);
 
-    _isMaximized = appWindow.isMaximized;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {
+          _isMaximized = appWindow.isMaximized;
+        });
+      }
+    });
   }
 
   @override
@@ -44,7 +51,6 @@ class _WindowControlsState extends State<WindowControls>
   @override
   void didChangeMetrics() {
     final isMaximized = appWindow.isMaximized;
-
     if (_isMaximized != isMaximized) {
       setState(() {
         _isMaximized = isMaximized;
@@ -66,7 +72,16 @@ class _WindowControlsState extends State<WindowControls>
 
   @override
   Widget build(BuildContext context) {
-    final defaultIconColor = widget.iconColor ?? AppColors.textPrimary;
+    final isDarkMode =
+        widget.isDark || Theme.of(context).brightness == Brightness.dark;
+
+    final defaultIconColor =
+        widget.iconColor ??
+        (isDarkMode ? AppColors.darkText : AppColors.textPrimary);
+
+    final hoverColor = isDarkMode
+        ? Colors.white.withValues(alpha: 0.12)
+        : Colors.black.withValues(alpha: 0.06);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -74,24 +89,25 @@ class _WindowControlsState extends State<WindowControls>
         CustomWindowIconButton(
           icon: PhosphorIconsRegular.minus,
           iconColor: widget.minimizeColor ?? defaultIconColor,
+          hoverColor: hoverColor,
           tooltip: 'Minimize',
           onPressed: appWindow.minimize,
         ),
-
         CustomWindowIconButton(
           icon: _isMaximized
               ? PhosphorIconsRegular.cornersIn
               : PhosphorIconsRegular.cornersOut,
           iconColor: widget.maximizeColor ?? defaultIconColor,
+          hoverColor: hoverColor,
           tooltip: _isMaximized ? 'Restore' : 'Maximize',
           onPressed: _toggleMaximize,
         ),
-
         CustomWindowIconButton(
           icon: PhosphorIconsRegular.x,
           iconColor: widget.closeColor ?? defaultIconColor,
+          hoverColor: Colors.red.withValues(alpha: 0.8),
+          closeHoverIconColor: Colors.white,
           tooltip: 'Close',
-          hoverColor: Colors.red.withValues(alpha: 0.2),
           onPressed: appWindow.close,
         ),
       ],

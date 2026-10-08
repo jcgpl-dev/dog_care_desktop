@@ -6,10 +6,20 @@ import '../../../../config/theme/app_dimensions.dart';
 import 'window_controls.dart';
 
 class AppTitleBar extends StatelessWidget {
-  const AppTitleBar({super.key});
+  final bool isDark;
+
+  const AppTitleBar({super.key, this.isDark = false});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode =
+        isDark || Theme.of(context).brightness == Brightness.dark;
+
+    final textColor = isDarkMode ? AppColors.darkText : AppColors.textPrimary;
+    final iconColor = isDarkMode
+        ? AppColors.primaryContainer
+        : AppColors.primary;
+
     return SizedBox(
       height: 40,
       child: Row(
@@ -22,19 +32,20 @@ class AppTitleBar extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.pets, size: 20, color: AppColors.primary),
+                    Icon(Icons.pets, size: 20, color: iconColor),
                     const SizedBox(width: 10),
                     Text(
                       'Dog Care & Monitoring System',
-                      style: Theme.of(context).textTheme.titleSmall,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleSmall?.copyWith(color: textColor),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-
-          const WindowControls(),
+          WindowControls(isDark: isDarkMode),
         ],
       ),
     );

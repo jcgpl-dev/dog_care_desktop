@@ -1,13 +1,14 @@
 import 'package:dog_care_desktop/features/auth/domain/entities/user.dart';
 
+import '../auth_datasource.dart';
 import '../../models/user_model.dart';
 
-class MockAuthDataSource {
+class MockAuthDataSource implements AuthDataSource {
+  @override
   Future<UserModel> login({
     required String username,
     required String password,
   }) async {
-    //delay.
     await Future.delayed(const Duration(milliseconds: 800));
 
     if (username == 'admin' && password == 'admin123') {
@@ -18,16 +19,6 @@ class MockAuthDataSource {
         role: UserRole.admin,
       );
     }
-
-    if (username == 'staff' && password == 'staff123') {
-      return const UserModel(
-        id: 2,
-        username: 'staff',
-        name: 'Municipal Agriculture Staff',
-        role: UserRole.staff,
-      );
-    }
-
     throw Exception('Invalid username or password.');
   }
 }

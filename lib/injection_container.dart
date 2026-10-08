@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import 'features/auth/data/datasources/auth_datasource.dart';
 import 'features/auth/data/datasources/local/mock_auth_datasource.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
@@ -17,11 +18,10 @@ Future<void> init() async {
   // Use cases
   sl.registerLazySingleton(() => Login(sl()));
 
-  // Repository
+  // Repository (depends on AuthDataSource interface)
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(dataSource: sl()),
+    () => AuthRepositoryImpl(dataSource: sl<AuthDataSource>()),
   );
 
-  // Data source
-  sl.registerLazySingleton(() => MockAuthDataSource());
+  sl.registerLazySingleton<AuthDataSource>(() => MockAuthDataSource());
 }

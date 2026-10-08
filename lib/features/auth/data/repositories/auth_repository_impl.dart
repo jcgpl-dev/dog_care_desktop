@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
+import 'package:dog_care_desktop/features/auth/data/datasources/auth_datasource.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../datasources/local/mock_auth_datasource.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final MockAuthDataSource dataSource;
+  final AuthDataSource dataSource;
 
   AuthRepositoryImpl({required this.dataSource});
 
