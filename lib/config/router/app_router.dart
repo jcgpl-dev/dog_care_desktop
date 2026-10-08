@@ -1,32 +1,108 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/presentation/shell/app_shell.dart';
+import '../../features/alerts/presentation/pages/alerts_page.dart';
+import '../../features/appointments/presentation/pages/appointments_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/dogs/presentation/pages/dogs_page.dart';
+import '../../features/health_records/presentation/pages/health_records_page.dart';
+import '../../features/reports/presentation/pages/reports_page.dart';
+import '../../features/services/presentation/pages/deworming_page.dart';
+import '../../features/services/presentation/pages/treatments_page.dart';
+import '../../features/services/presentation/pages/vaccinations_page.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/user_management/presentation/pages/user_management_page.dart';
 
 class AppRouter {
   AppRouter._();
 
-  static final GoRouter router = GoRouter(
-    initialLocation: '/login',
+  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
+  static final router = GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/dashboard',
     routes: [
+      // Auth Route (Outside Shell)
       GoRoute(
         path: '/login',
-        builder: (context, state) {
-          return const LoginPage();
-        },
+        builder: (context, state) => const LoginPage(),
       ),
 
+      // Shell Routes (Inside Persistent Sidebar / TopBar Desktop Frame)
       ShellRoute(
+        navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
           return AppShell(child: child);
         },
         routes: [
           GoRoute(
             path: '/dashboard',
-            builder: (context, state) {
-              return const DashboardPage();
-            },
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: DashboardPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/dogs',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: DogsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/health-records',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: HealthRecordsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/vaccinations',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: VaccinationsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/deworming',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: DewormingPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/treatments',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: TreatmentsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/appointments',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: AppointmentsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/reports',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: ReportsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/alerts',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: AlertsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/manage-users',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: UserManagementPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/settings',
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: SettingsPage(),
+            ),
           ),
         ],
       ),
