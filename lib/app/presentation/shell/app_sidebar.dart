@@ -26,6 +26,11 @@ class _AppSidebarState extends State<AppSidebar> {
     ),
     AppNavigationItem(label: 'Dogs', icon: Icons.pets_outlined, route: '/dogs'),
     AppNavigationItem(
+      label: 'Owners',
+      icon: Icons.person_2_outlined,
+      route: '/owners',
+    ),
+    AppNavigationItem(
       label: 'Health Records',
       icon: Icons.monitor_heart_outlined,
       route: '/health-records',

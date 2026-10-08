@@ -19,6 +19,8 @@ class AppTopBar extends StatelessWidget {
         return 'Dashboard';
       case '/dogs':
         return 'Dogs Management';
+      case '/owners':
+        return 'Owners';
       case '/health-records':
         return 'Health Records';
       case '/services':
