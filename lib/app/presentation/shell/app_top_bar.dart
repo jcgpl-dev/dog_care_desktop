@@ -3,12 +3,13 @@ import 'package:dog_care_desktop/features/auth/presentation/bloc/auth_bloc.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/cubit/theme_cubit.dart';
-import 'cubit/sidebar_cubit.dart';
 import '../../../../core/presentation/widgets/app_window/window_controls.dart';
+import 'cubit/sidebar_cubit.dart';
 
 class AppTopBar extends StatelessWidget {
   const AppTopBar({super.key});
@@ -24,7 +25,7 @@ class AppTopBar extends StatelessWidget {
       case '/health-records':
         return 'Health Records';
       case '/services':
-        return 'Services';
+        return 'Services Overview';
       case '/vaccinations':
         return 'Vaccinations';
       case '/deworming':
@@ -72,7 +73,9 @@ class AppTopBar extends StatelessWidget {
                   padding: const EdgeInsets.only(left: AppDimensions.spacing8),
                   child: Text(
                     _getPageTitle(currentPath),
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -100,10 +103,7 @@ class AppTopBar extends StatelessWidget {
             splashRadius: 18,
             iconSize: 20,
             onPressed: () => context.read<SidebarCubit>().toggleSidebar(),
-            icon: Transform.flip(
-              flipX: isCollapsed,
-              child: Icon(isCollapsed ? Icons.menu_open : Icons.menu),
-            ),
+            icon: Icon(PhosphorIcons.list(PhosphorIconsStyle.bold)),
           ),
         );
       },
@@ -117,7 +117,9 @@ class AppTopBar extends StatelessWidget {
       iconSize: 20,
       onPressed: () => context.read<ThemeCubit>().toggleTheme(),
       icon: Icon(
-        isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+        isDarkMode
+            ? PhosphorIcons.sun(PhosphorIconsStyle.bold)
+            : PhosphorIcons.moon(PhosphorIconsStyle.bold),
       ),
     );
   }
@@ -128,7 +130,7 @@ class AppTopBar extends StatelessWidget {
       splashRadius: 18,
       iconSize: 20,
       onPressed: () {},
-      icon: const Icon(Icons.notifications_none_outlined),
+      icon: Icon(PhosphorIcons.bell(PhosphorIconsStyle.bold)),
     );
   }
 
@@ -138,7 +140,7 @@ class AppTopBar extends StatelessWidget {
         final userName = state is AuthAuthenticated ? state.user.name : 'User';
 
         return PopupMenuButton<String>(
-          tooltip: 'Account',
+          tooltip: 'Account Options',
           onSelected: (value) {
             if (value == 'logout') {
               context.read<AuthBloc>().add(const AuthLogoutRequested());
@@ -154,15 +156,21 @@ class AppTopBar extends StatelessWidget {
               CircleAvatar(
                 radius: 14,
                 backgroundColor: AppColors.primaryContainer,
-                child: const Icon(
-                  Icons.person_outline,
+                child: Icon(
+                  PhosphorIcons.user(PhosphorIconsStyle.bold),
                   size: 16,
                   color: AppColors.primary,
                 ),
               ),
               const SizedBox(width: AppDimensions.spacing8),
-              Text(userName, style: Theme.of(context).textTheme.labelLarge),
-              const Icon(Icons.keyboard_arrow_down, size: 18),
+              Text(
+                userName,
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(width: AppDimensions.spacing4),
+              Icon(PhosphorIcons.caretDown(PhosphorIconsStyle.bold), size: 14),
             ],
           ),
         );

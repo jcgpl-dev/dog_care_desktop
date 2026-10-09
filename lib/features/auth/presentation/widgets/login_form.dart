@@ -1,3 +1,5 @@
+import 'dart:ui';
+import 'package:dog_care_desktop/core/presentation/widgets/cards/glass_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,64 +54,91 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.cardColor,
-      elevation: 12,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+    const double cardRadius = 24.0;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(cardRadius),
+        // Multi-layered soft ambient drop shadow
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 32,
+            spreadRadius: -4,
+            offset: const Offset(0, 16),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.loginCardPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Sign in to your account',
-                style: Theme.of(
-                  context,
-                ).textTheme.headlineMedium?.copyWith(color: AppColors.darkText),
-              ),
-              const SizedBox(height: AppDimensions.spacing24),
-              AppTextField(
-                variant: AppTextFieldVariant.dark,
-                focusedBorderColor: AppColors.primary,
-                label: 'Username',
-                hint: 'Enter username',
-                controller: _usernameController,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                validator: AuthValidators.validateUsername,
-              ),
-              const SizedBox(height: AppDimensions.spacing16),
-              AppTextField(
-                variant: AppTextFieldVariant.dark,
-                label: 'Password',
-                hint: 'Enter password',
-                controller: _passwordController,
-                focusedBorderColor: AppColors.primary,
-                keyboardType: TextInputType.visiblePassword,
-                textInputAction: TextInputAction.done,
-                obscureText: _obscurePassword,
-                suffixIconColor: AppColors.secondary,
-                suffixIcon: IconButton(
-                  onPressed: _togglePasswordVisibility,
-                  icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                  ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(cardRadius),
+        child: BackdropFilter(
+          // Blur background content behind the glass card
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: GlassContainer(
+            child: Padding(
+              padding: const EdgeInsets.all(AppDimensions.loginCardPadding),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Sign in to your account',
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: -0.5,
+                          ),
+                    ),
+                    const SizedBox(height: AppDimensions.spacing24),
+                    AppTextField(
+                      variant: AppTextFieldVariant.dark,
+                      focusedBorderColor: AppColors.primary,
+                      label: 'Username',
+                      hint: 'Enter username',
+                      controller: _usernameController,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      validator: AuthValidators.validateUsername,
+                    ),
+                    const SizedBox(height: AppDimensions.spacing16),
+                    AppTextField(
+                      variant: AppTextFieldVariant.dark,
+                      label: 'Password',
+                      hint: 'Enter password',
+                      controller: _passwordController,
+                      focusedBorderColor: AppColors.primary,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                      obscureText: _obscurePassword,
+                      suffixIconColor: Colors.white70,
+                      suffixIcon: IconButton(
+                        onPressed: _togglePasswordVisibility,
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      validator: AuthValidators.validatePassword,
+                      onSubmitted: (_) => _submit(),
+                    ),
+                    const SizedBox(height: AppDimensions.spacing24),
+                    _LoginSubmitButton(onPressed: _submit),
+                    const SizedBox(height: AppDimensions.spacing24),
+                    _SignUpPrompt(onSignUpPressed: widget.onSignUpPressed),
+                  ],
                 ),
-                validator: AuthValidators.validatePassword,
-                onSubmitted: (_) => _submit(),
               ),
-              const SizedBox(height: AppDimensions.spacing24),
-              _LoginSubmitButton(onPressed: _submit),
-              const SizedBox(height: AppDimensions.spacing24),
-              _SignUpPrompt(onSignUpPressed: widget.onSignUpPressed),
-            ],
+            ),
           ),
         ),
       ),
@@ -132,7 +161,7 @@ class _LoginSubmitButton extends StatelessWidget {
 
         return AppButton(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.textPrimary,
+          foregroundColor: Colors.white,
           label: 'Sign in',
           isLoading: isLoading,
           onPressed: isLoading ? null : onPressed,
@@ -156,13 +185,16 @@ class _SignUpPrompt extends StatelessWidget {
           "Don't have an account?",
           style: Theme.of(
             context,
-          ).textTheme.bodyMedium?.copyWith(color: AppColors.darkText),
+          ).textTheme.bodyMedium?.copyWith(color: Colors.white70),
         ),
         TextButton(
           onPressed: onSignUpPressed,
           child: const Text(
             'Sign Up',
-            style: TextStyle(color: AppColors.primary),
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],

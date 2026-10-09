@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
@@ -19,8 +20,8 @@ class LoginHeader extends StatelessWidget {
             color: AppColors.primary,
             borderRadius: BorderRadius.circular(AppDimensions.loginLogoRadius),
           ),
-          child: const Icon(
-            Icons.pets,
+          child: PhosphorIcon(
+            PhosphorIconsRegular.dog,
             color: AppColors.darkText,
             size: AppDimensions.loginLogoIconSize,
           ),

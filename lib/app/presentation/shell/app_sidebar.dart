@@ -2,6 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../config/theme/app_colors.dart';
 import '../../../config/theme/app_dimensions.dart';
@@ -18,71 +19,81 @@ class AppSidebar extends StatefulWidget {
 class _AppSidebarState extends State<AppSidebar> {
   bool _isServicesExpanded = true;
 
-  static const _primaryItems = [
+  static final _primaryItems = [
     AppNavigationItem(
       label: 'Dashboard',
-      icon: Icons.grid_view_rounded,
+      icon: Icon(PhosphorIcons.squaresFour(PhosphorIconsStyle.bold), size: 20),
       route: '/dashboard',
     ),
-    AppNavigationItem(label: 'Dogs', icon: Icons.pets_outlined, route: '/dogs'),
+    AppNavigationItem(
+      label: 'Dogs',
+      icon: Icon(PhosphorIcons.dog(PhosphorIconsStyle.bold), size: 20),
+      route: '/dogs',
+    ),
     AppNavigationItem(
       label: 'Owners',
-      icon: Icons.person_2_outlined,
+      icon: Icon(PhosphorIcons.user(PhosphorIconsStyle.bold), size: 20),
       route: '/owners',
     ),
     AppNavigationItem(
       label: 'Health Records',
-      icon: Icons.monitor_heart_outlined,
+      icon: Icon(PhosphorIcons.heartbeat(PhosphorIconsStyle.bold), size: 20),
       route: '/health-records',
     ),
     AppNavigationItem(
       label: 'Services',
-      icon: Icons.favorite_outline_rounded,
-      route: '/services', //main dawg
+      icon: Icon(PhosphorIcons.firstAid(PhosphorIconsStyle.bold), size: 20),
+      route: '/services',
       children: [
         AppNavigationItem(
           label: 'Vaccinations',
-          icon: Icons.vaccines_outlined,
+          icon: Icon(PhosphorIcons.syringe(PhosphorIconsStyle.bold), size: 18),
           route: '/vaccinations',
         ),
         AppNavigationItem(
           label: 'Deworming',
-          icon: Icons.link_outlined,
+          icon: Icon(PhosphorIcons.pill(PhosphorIconsStyle.bold), size: 18),
           route: '/deworming',
         ),
         AppNavigationItem(
           label: 'Treatments',
-          icon: Icons.medical_services_outlined,
+          icon: Icon(
+            PhosphorIcons.stethoscope(PhosphorIconsStyle.bold),
+            size: 18,
+          ),
           route: '/treatments',
         ),
       ],
     ),
     AppNavigationItem(
       label: 'Appointments',
-      icon: Icons.calendar_today_outlined,
+      icon: Icon(
+        PhosphorIcons.calendarBlank(PhosphorIconsStyle.bold),
+        size: 20,
+      ),
       route: '/appointments',
     ),
     AppNavigationItem(
       label: 'Reports',
-      icon: Icons.description_outlined,
+      icon: Icon(PhosphorIcons.fileText(PhosphorIconsStyle.bold), size: 20),
       route: '/reports',
     ),
     AppNavigationItem(
       label: 'Alerts',
-      icon: Icons.notifications_none_outlined,
+      icon: Icon(PhosphorIcons.bell(PhosphorIconsStyle.bold), size: 20),
       route: '/alerts',
     ),
   ];
 
-  static const _adminItems = [
+  static final _adminItems = [
     AppNavigationItem(
       label: 'Manage Users',
-      icon: Icons.people_outline_rounded,
+      icon: Icon(PhosphorIcons.users(PhosphorIconsStyle.bold), size: 20),
       route: '/manage-users',
     ),
     AppNavigationItem(
       label: 'Settings',
-      icon: Icons.settings_outlined,
+      icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.bold), size: 20),
       route: '/settings',
     ),
   ];
@@ -151,7 +162,6 @@ class _AppSidebarState extends State<AppSidebar> {
                   ],
                 ),
               ),
-              // _buildBottomProfileCard(context, isCollapsed, isDarkMode),
             ],
           ),
         );
@@ -190,7 +200,7 @@ class _AppSidebarState extends State<AppSidebar> {
                       ),
                     ),
                     child: Icon(
-                      Icons.pets,
+                      PhosphorIcons.pawPrint(PhosphorIconsStyle.fill),
                       size: 18,
                       color: Theme.of(context).colorScheme.surface,
                     ),
@@ -263,75 +273,6 @@ class _AppSidebarState extends State<AppSidebar> {
       ],
     );
   }
-
-  Widget _buildBottomProfileCard(
-    BuildContext context,
-    bool isCollapsed,
-    bool isDarkMode,
-  ) {
-    final cardBg = isDarkMode
-        ? AppColors.primary.withOpacity(0.15)
-        : AppColors.primaryContainer.withOpacity(0.5);
-
-    return Container(
-      margin: const EdgeInsets.all(AppDimensions.spacing12),
-      padding: EdgeInsets.symmetric(
-        horizontal: isCollapsed ? 0 : AppDimensions.spacing12,
-        vertical: AppDimensions.spacing8,
-      ),
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-      ),
-      child: Row(
-        mainAxisAlignment: isCollapsed
-            ? MainAxisAlignment.center
-            : MainAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 16,
-            backgroundColor: AppColors.primary,
-            child: const Text(
-              'A',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-          ),
-          if (!isCollapsed) ...[
-            const SizedBox(width: AppDimensions.spacing12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Admin User',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Administrator',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(fontSize: 11),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.keyboard_arrow_down, size: 18),
-          ],
-        ],
-      ),
-    );
-  }
 }
 
 class _SidebarItem extends StatelessWidget {
@@ -340,7 +281,7 @@ class _SidebarItem extends StatelessWidget {
   final bool isSubItem;
   final bool? isExpanded;
   final VoidCallback? onTap;
-  final VoidCallback? onChevronTap; // 👈 Dedicated chevron callback
+  final VoidCallback? onChevronTap;
 
   const _SidebarItem({
     required this.item,
@@ -392,12 +333,14 @@ class _SidebarItem extends StatelessWidget {
                     width: 44,
                     height: 40,
                     child: Center(
-                      child: Icon(
-                        item.icon,
-                        size: isSubItem ? 18 : 20,
-                        color: isSelected
-                            ? activeItemColor
-                            : unselectedIconColor,
+                      // Wrap item.icon in IconTheme to apply active/unselected color dynamically
+                      child: IconTheme(
+                        data: IconThemeData(
+                          color: isSelected
+                              ? activeItemColor
+                              : unselectedIconColor,
+                        ),
+                        child: item.icon, // 👈 Directly renders Widget
                       ),
                     ),
                   ),
@@ -425,13 +368,15 @@ class _SidebarItem extends StatelessWidget {
                     if (isExpanded != null)
                       IconButton(
                         splashRadius: 16,
-                        iconSize: 18,
+                        iconSize: 16,
                         visualDensity: VisualDensity.compact,
                         onPressed: onChevronTap,
                         icon: Icon(
                           isExpanded!
-                              ? Icons.keyboard_arrow_up
-                              : Icons.keyboard_arrow_down,
+                              ? PhosphorIcons.caretUp(PhosphorIconsStyle.bold)
+                              : PhosphorIcons.caretDown(
+                                  PhosphorIconsStyle.bold,
+                                ),
                           color: unselectedIconColor,
                         ),
                       ),

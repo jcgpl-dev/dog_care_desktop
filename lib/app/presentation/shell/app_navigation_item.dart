@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppNavigationItem {
   final String label;
-  final IconData icon;
+  final Widget icon;
   final String? route;
   final List<AppNavigationItem>? children;
 
