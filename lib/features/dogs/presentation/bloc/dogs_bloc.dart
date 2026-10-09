@@ -38,15 +38,20 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     );
   }
 
-  Future<void> _onAddDog(AddDogRequested event, Emitter<DogsState> emit) async {
+  Future<void> _onAddDog(
+    AddDogRequested event,
+    Emitter<DogsState> emit,
+  ) async {
     if (state is DogsLoaded) {
       final currentState = state as DogsLoaded;
       final result = await registerDog(event.dog);
-      result.fold((failure) => emit(DogsError(failure.message)), (newDog) {
-        final updatedDogs = List<Dog>.from(currentState.dogs)
-          ..insert(0, newDog);
-        emit(_applyFilters(currentState.copyWith(dogs: updatedDogs)));
-      });
+      result.fold(
+        (failure) => emit(DogsError(failure.message)),
+        (newDog) {
+          final updatedDogs = List<Dog>.from(currentState.dogs)..insert(0, newDog);
+          emit(_applyFilters(currentState.copyWith(dogs: updatedDogs)));
+        },
+      );
     }
   }
 
@@ -57,12 +62,13 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     if (state is DogsLoaded) {
       final currentState = state as DogsLoaded;
       final result = await deleteDog(event.dogId);
-      result.fold((failure) => emit(DogsError(failure.message)), (_) {
-        final updatedDogs = currentState.dogs
-            .where((d) => d.id != event.dogId)
-            .toList();
-        emit(_applyFilters(currentState.copyWith(dogs: updatedDogs)));
-      });
+      result.fold(
+        (failure) => emit(DogsError(failure.message)),
+        (_) {
+          final updatedDogs = currentState.dogs.where((d) => d.id != event.dogId).toList();
+          emit(_applyFilters(currentState.copyWith(dogs: updatedDogs)));
+        },
+      );
     }
   }
 

@@ -27,3 +27,5 @@ class FilterDogsByBarangayChanged extends DogsEvent {
   final String? barangay;
   const FilterDogsByBarangayChanged(this.barangay);
 }
+
+

@@ -49,3 +49,5 @@ class DogsError extends DogsState {
   @override
   List<Object?> get props => [message];
 }
+
+
