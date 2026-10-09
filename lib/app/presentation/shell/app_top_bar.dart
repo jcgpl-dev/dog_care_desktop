@@ -7,6 +7,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
+import '../../../../config/theme/app_text_styles.dart';
 import '../../../../config/theme/cubit/theme_cubit.dart';
 import '../../../../core/presentation/widgets/app_window/window_controls.dart';
 import 'cubit/sidebar_cubit.dart';
@@ -62,8 +63,8 @@ class AppTopBar extends StatelessWidget {
           padding: const EdgeInsets.only(left: AppDimensions.spacing8),
           child: IconButton(
             tooltip: isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar',
-            splashRadius: 18,
-            iconSize: 20,
+            splashRadius: AppDimensions.spacing16 + AppDimensions.spacing2,
+            iconSize: AppDimensions.spacing20,
             onPressed: () => context.read<SidebarCubit>().toggleSidebar(),
             icon: Icon(PhosphorIcons.list(PhosphorIconsStyle.bold)),
           ),
@@ -75,8 +76,8 @@ class AppTopBar extends StatelessWidget {
   Widget _buildThemeToggleButton(BuildContext context, bool isDarkMode) {
     return IconButton(
       tooltip: isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode',
-      splashRadius: 18,
-      iconSize: 20,
+      splashRadius: AppDimensions.spacing16 + AppDimensions.spacing2,
+      iconSize: AppDimensions.spacing20,
       onPressed: () => context.read<ThemeCubit>().toggleTheme(),
       icon: Icon(
         isDarkMode
@@ -89,8 +90,8 @@ class AppTopBar extends StatelessWidget {
   Widget _buildNotificationButton() {
     return IconButton(
       tooltip: 'Notifications',
-      splashRadius: 18,
-      iconSize: 20,
+      splashRadius: AppDimensions.spacing16 + AppDimensions.spacing2,
+      iconSize: AppDimensions.spacing20,
       onPressed: () {},
       icon: Icon(PhosphorIcons.bell(PhosphorIconsStyle.bold)),
     );
@@ -108,31 +109,40 @@ class AppTopBar extends StatelessWidget {
               context.read<AuthBloc>().add(const AuthLogoutRequested());
             }
           },
-          itemBuilder: (context) => const [
-            PopupMenuItem(value: 'profile', child: Text('Profile')),
-            PopupMenuItem(value: 'logout', child: Text('Sign out')),
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 'profile',
+              child: Text('Profile', style: AppTextStyles.bodyMedium),
+            ),
+            PopupMenuItem(
+              value: 'logout',
+              child: Text('Sign out', style: AppTextStyles.bodyMedium),
+            ),
           ],
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               CircleAvatar(
-                radius: 14,
+                radius: AppDimensions.spacing12 + AppDimensions.spacing2,
                 backgroundColor: AppColors.primaryContainer,
                 child: Icon(
                   PhosphorIcons.user(PhosphorIconsStyle.bold),
-                  size: 16,
+                  size: AppDimensions.spacing16,
                   color: AppColors.primary,
                 ),
               ),
               const SizedBox(width: AppDimensions.spacing8),
               Text(
                 userName,
-                style: Theme.of(
-                  context,
-                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+                style: AppTextStyles.labelLarge.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(width: AppDimensions.spacing4),
-              Icon(PhosphorIcons.caretDown(PhosphorIconsStyle.bold), size: 14),
+              Icon(
+                PhosphorIcons.caretDown(PhosphorIconsStyle.bold),
+                size: AppDimensions.spacing12 + AppDimensions.spacing2,
+              ),
             ],
           ),
         );

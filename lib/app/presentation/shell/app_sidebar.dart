@@ -6,6 +6,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../config/theme/app_colors.dart';
 import '../../../config/theme/app_dimensions.dart';
+import '../../../config/theme/app_text_styles.dart';
 import 'app_navigation_item.dart';
 import 'cubit/sidebar_cubit.dart';
 
@@ -22,65 +23,59 @@ class _AppSidebarState extends State<AppSidebar> {
   static final _primaryItems = [
     AppNavigationItem(
       label: 'Dashboard',
-      icon: Icon(PhosphorIcons.squaresFour(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.squaresFour(PhosphorIconsStyle.bold)),
       route: '/dashboard',
     ),
     AppNavigationItem(
       label: 'Dogs',
-      icon: Icon(PhosphorIcons.dog(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.dog(PhosphorIconsStyle.bold)),
       route: '/dogs',
     ),
     AppNavigationItem(
       label: 'Owners',
-      icon: Icon(PhosphorIcons.user(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.user(PhosphorIconsStyle.bold)),
       route: '/owners',
     ),
     AppNavigationItem(
       label: 'Health Records',
-      icon: Icon(PhosphorIcons.heartbeat(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.heartbeat(PhosphorIconsStyle.bold)),
       route: '/health-records',
     ),
     AppNavigationItem(
       label: 'Services',
-      icon: Icon(PhosphorIcons.firstAid(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.firstAid(PhosphorIconsStyle.bold)),
       route: '/services',
       children: [
         AppNavigationItem(
           label: 'Vaccinations',
-          icon: Icon(PhosphorIcons.syringe(PhosphorIconsStyle.bold), size: 20),
+          icon: Icon(PhosphorIcons.syringe(PhosphorIconsStyle.bold)),
           route: '/services/vaccinations',
         ),
         AppNavigationItem(
           label: 'Deworming',
-          icon: Icon(PhosphorIcons.pill(PhosphorIconsStyle.bold), size: 20),
+          icon: Icon(PhosphorIcons.pill(PhosphorIconsStyle.bold)),
           route: '/services/deworming',
         ),
         AppNavigationItem(
           label: 'Treatments',
-          icon: Icon(
-            PhosphorIcons.stethoscope(PhosphorIconsStyle.bold),
-            size: 20,
-          ),
+          icon: Icon(PhosphorIcons.stethoscope(PhosphorIconsStyle.bold)),
           route: '/services/treatments',
         ),
       ],
     ),
     AppNavigationItem(
       label: 'Appointments',
-      icon: Icon(
-        PhosphorIcons.calendarBlank(PhosphorIconsStyle.bold),
-        size: 20,
-      ),
+      icon: Icon(PhosphorIcons.calendarBlank(PhosphorIconsStyle.bold)),
       route: '/appointments',
     ),
     AppNavigationItem(
       label: 'Reports',
-      icon: Icon(PhosphorIcons.fileText(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.fileText(PhosphorIconsStyle.bold)),
       route: '/reports',
     ),
     AppNavigationItem(
       label: 'Alerts',
-      icon: Icon(PhosphorIcons.bell(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.bell(PhosphorIconsStyle.bold)),
       route: '/alerts',
     ),
   ];
@@ -88,12 +83,12 @@ class _AppSidebarState extends State<AppSidebar> {
   static final _adminItems = [
     AppNavigationItem(
       label: 'Manage Users',
-      icon: Icon(PhosphorIcons.users(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.users(PhosphorIconsStyle.bold)),
       route: '/manage-users',
     ),
     AppNavigationItem(
       label: 'Settings',
-      icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.bold), size: 20),
+      icon: Icon(PhosphorIcons.gear(PhosphorIconsStyle.bold)),
       route: '/settings',
     ),
   ];
@@ -150,7 +145,7 @@ class _AppSidebarState extends State<AppSidebar> {
                         ),
                         child: Text(
                           'ADMIN',
-                          style: theme.textTheme.labelSmall?.copyWith(
+                          style: AppTextStyles.labelSmall.copyWith(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.1,
@@ -187,12 +182,12 @@ class _AppSidebarState extends State<AppSidebar> {
           child: Row(
             children: [
               SizedBox(
-                width: 44,
-                height: 44,
+                width: AppDimensions.buttonHeight,
+                height: AppDimensions.buttonHeight,
                 child: Center(
                   child: Container(
-                    width: 32,
-                    height: 32,
+                    width: AppDimensions.spacing32,
+                    height: AppDimensions.spacing32,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(
@@ -201,7 +196,7 @@ class _AppSidebarState extends State<AppSidebar> {
                     ),
                     child: Icon(
                       PhosphorIcons.pawPrint(PhosphorIconsStyle.fill),
-                      size: 18,
+                      size: AppDimensions.spacing16 + AppDimensions.spacing2,
                       color: Theme.of(context).colorScheme.surface,
                     ),
                   ),
@@ -214,10 +209,9 @@ class _AppSidebarState extends State<AppSidebar> {
                     'Dog Care',
                     maxLines: 1,
                     overflow: TextOverflow.clip,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    style: AppTextStyles.titleLarge.copyWith(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
                     ),
                   ),
                 ),
@@ -298,10 +292,15 @@ class _SidebarItem extends StatelessWidget {
     final isDarkMode = theme.brightness == Brightness.dark;
 
     final currentPath = GoRouterState.of(context).matchedLocation;
-    final isSelected = item.route != null && currentPath == item.route;
+
+    // Check if path matches exactly or if it is a parent path of the current sub-route
+    final isSelected =
+        item.route != null &&
+        (currentPath == item.route ||
+            (item.hasChildren && currentPath.startsWith('${item.route}/')));
 
     final activeBgColor = isDarkMode
-        ? AppColors.primary.withOpacity(0.18)
+        ? AppColors.primary.withValues(alpha: 0.18)
         : AppColors.primaryContainer;
     final activeItemColor = isDarkMode
         ? AppColors.primaryContainer
@@ -309,6 +308,10 @@ class _SidebarItem extends StatelessWidget {
     final unselectedIconColor = isDarkMode
         ? AppColors.darkTextSecondary
         : AppColors.textSecondary;
+
+    final iconSize = isSubItem
+        ? AppDimensions.spacing16 + 2
+        : AppDimensions.spacing20;
 
     Widget itemTile = Padding(
       padding: const EdgeInsets.only(bottom: AppDimensions.spacing4),
@@ -325,22 +328,22 @@ class _SidebarItem extends StatelessWidget {
             }
           },
           child: SizedBox(
-            height: 40,
+            height: AppDimensions.spacing40,
             child: ClipRect(
               child: Row(
                 children: [
                   SizedBox(
-                    width: 44,
-                    height: 40,
+                    width: AppDimensions.buttonHeight,
+                    height: AppDimensions.spacing40,
                     child: Center(
-                      // Wrap item.icon in IconTheme to apply active/unselected color dynamically
                       child: IconTheme(
                         data: IconThemeData(
+                          size: iconSize,
                           color: isSelected
                               ? activeItemColor
                               : unselectedIconColor,
                         ),
-                        child: item.icon, // 👈 Directly renders Widget
+                        child: item.icon,
                       ),
                     ),
                   ),
@@ -354,7 +357,7 @@ class _SidebarItem extends StatelessWidget {
                           item.label,
                           maxLines: 1,
                           overflow: TextOverflow.clip,
-                          style: theme.textTheme.labelLarge?.copyWith(
+                          style: AppTextStyles.labelLarge.copyWith(
                             color: isSelected
                                 ? activeItemColor
                                 : theme.textTheme.bodyMedium?.color,
@@ -367,8 +370,8 @@ class _SidebarItem extends StatelessWidget {
                     ),
                     if (isExpanded != null)
                       IconButton(
-                        splashRadius: 16,
-                        iconSize: 16,
+                        splashRadius: AppDimensions.spacing16,
+                        iconSize: AppDimensions.spacing16,
                         visualDensity: VisualDensity.compact,
                         onPressed: onChevronTap,
                         icon: Icon(

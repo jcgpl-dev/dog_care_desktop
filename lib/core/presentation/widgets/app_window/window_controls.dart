@@ -87,7 +87,7 @@ class _WindowControlsState extends State<WindowControls>
       mainAxisSize: MainAxisSize.min,
       children: [
         CustomWindowIconButton(
-          icon: PhosphorIconsRegular.minus,
+          icon: PhosphorIconsBold.minus,
           iconColor: widget.minimizeColor ?? defaultIconColor,
           hoverColor: hoverColor,
           tooltip: 'Minimize',
@@ -95,15 +95,15 @@ class _WindowControlsState extends State<WindowControls>
         ),
         CustomWindowIconButton(
           icon: _isMaximized
-              ? PhosphorIconsRegular.cornersIn
-              : PhosphorIconsRegular.cornersOut,
+              ? PhosphorIconsBold.cornersIn
+              : PhosphorIconsBold.cornersOut,
           iconColor: widget.maximizeColor ?? defaultIconColor,
           hoverColor: hoverColor,
           tooltip: _isMaximized ? 'Restore' : 'Maximize',
           onPressed: _toggleMaximize,
         ),
         CustomWindowIconButton(
-          icon: PhosphorIconsRegular.x,
+          icon: PhosphorIconsBold.x,
           iconColor: widget.closeColor ?? defaultIconColor,
           hoverColor: Colors.red.withValues(alpha: 0.8),
           closeHoverIconColor: Colors.white,

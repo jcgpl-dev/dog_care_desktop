@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../config/theme/app_colors.dart';
+import '../../../../config/theme/app_dimensions.dart';
+import '../../../../config/theme/app_text_styles.dart';
 
 class AppBreadcrumbs extends StatelessWidget {
   const AppBreadcrumbs({super.key});
@@ -25,13 +27,17 @@ class AppBreadcrumbs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final location = GoRouterState.of(context).matchedLocation;
     final segments = location.split('/').where((s) => s.isNotEmpty).toList();
 
     if (segments.isEmpty) {
-      return const Text(
+      return Text(
         'Dashboard',
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: AppTextStyles.titleMedium.copyWith(
+          color: isDark ? AppColors.darkText : AppColors.textPrimary,
+        ),
       );
     }
 
@@ -47,19 +53,25 @@ class AppBreadcrumbs extends StatelessWidget {
 
       breadcrumbs.add(
         InkWell(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           onTap: isLast ? null : () => context.go(targetPath),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.spacing4,
+              vertical: AppDimensions.spacing2,
+            ),
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isLast ? FontWeight.bold : FontWeight.w500,
-                color: isLast
-                    ? Theme.of(context).textTheme.titleMedium?.color
-                    : AppColors.primary,
-              ),
+              style: isLast
+                  ? AppTextStyles.titleMedium.copyWith(
+                      color: isDark
+                          ? AppColors.darkText
+                          : AppColors.textPrimary,
+                    )
+                  : AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
             ),
           ),
         ),
@@ -68,11 +80,15 @@ class AppBreadcrumbs extends StatelessWidget {
       if (!isLast) {
         breadcrumbs.add(
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.spacing2,
+            ),
             child: Icon(
               PhosphorIcons.caretRight(PhosphorIconsStyle.bold),
-              size: 12,
-              color: AppColors.textSecondary,
+              size: AppDimensions.spacing12,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.textSecondary,
             ),
           ),
         );
