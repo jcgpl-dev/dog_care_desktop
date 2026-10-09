@@ -1,6 +1,5 @@
-import 'package:dog_care_desktop/features/dogs/domain/entities/dog.dart';
-
 import '../../models/dog_model.dart';
+import '../../../domain/entities/dog.dart';
 
 abstract class DogsDataSource {
   Future<List<DogModel>> getDogs();
@@ -13,97 +12,61 @@ class MockDogsDataSource implements DogsDataSource {
   final List<DogModel> _mockDogs = [
     DogModel(
       id: 'DOG-2026-001',
-      name: 'Bruno',
+      photoUrl: null,
+      petName: 'Bruno',
+      species: 'Dog',
       breed: 'Askal / Aspin',
-      color: 'Brown & White',
+      birthdate: DateTime(2023, 4, 12),
+      sex: DogSex.male,
       ownerName: 'Juan Dela Cruz',
-      ownerContact: '+63 917 123 4567',
-      barangay: 'Uno (Poblacion)',
-      ageYears: 3,
-      weightKg: 14.5,
-      gender: DogGender.male,
-      status: DogStatus.healthy,
-      isVaccinated: true,
+      address: 'Poblacion, Zamboanga City',
+      contactNumber: '+63 917 123 4567',
       registeredAt: DateTime(2026, 1, 15),
     ),
     DogModel(
       id: 'DOG-2026-002',
-      name: 'Max',
+      photoUrl: null,
+      petName: 'Max',
+      species: 'Dog',
       breed: 'German Shepherd',
-      color: 'Black & Tan',
+      birthdate: DateTime(2024, 2, 20),
+      sex: DogSex.male,
       ownerName: 'Maria Santos',
-      ownerContact: '+63 918 234 5678',
-      barangay: 'Dos (Poblacion)',
-      ageYears: 2,
-      weightKg: 28.0,
-      gender: DogGender.male,
-      status: DogStatus.healthy,
-      isVaccinated: true,
+      address: 'Tetuan, Zamboanga City',
+      contactNumber: '+63 918 234 5678',
       registeredAt: DateTime(2026, 2, 10),
     ),
     DogModel(
       id: 'DOG-2026-003',
-      name: 'Lucky',
+      photoUrl: null,
+      petName: 'Lucky',
+      species: 'Dog',
       breed: 'Shih Tzu',
-      color: 'White & Gold',
+      birthdate: DateTime(2025, 1, 10),
+      sex: DogSex.female,
       ownerName: 'Ana Reyes',
-      ownerContact: '+63 919 345 6789',
-      barangay: 'San Antonio',
-      ageYears: 1,
-      weightKg: 5.2,
-      gender: DogGender.female,
-      status: DogStatus.healthy,
-      isVaccinated: false,
-      registeredAt: DateTime(2026, 3, 01),
-    ),
-    DogModel(
-      id: 'DOG-2026-004',
-      name: 'Rocky',
-      breed: 'Labrador Retriever',
-      color: 'Yellow',
-      ownerName: 'Mark Mendoza',
-      ownerContact: '+63 920 456 7890',
-      barangay: 'Matam',
-      ageYears: 4,
-      weightKg: 30.1,
-      gender: DogGender.male,
-      status: DogStatus.atRisk,
-      isVaccinated: false,
-      registeredAt: DateTime(2026, 3, 12),
-    ),
-    DogModel(
-      id: 'DOG-2026-005',
-      name: 'Choco',
-      breed: 'Askal / Aspin',
-      color: 'Dark Brown',
-      ownerName: 'Elena Garcia',
-      ownerContact: '+63 921 567 8901',
-      barangay: 'Matingao',
-      ageYears: 2,
-      weightKg: 12.0,
-      gender: DogGender.female,
-      status: DogStatus.healthy,
-      isVaccinated: true,
-      registeredAt: DateTime(2026, 4, 05),
+      address: 'San Jose, Zamboanga City',
+      contactNumber: '+63 919 345 6789',
+      registeredAt: DateTime(2026, 3, 1),
     ),
   ];
 
   @override
   Future<List<DogModel>> getDogs() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 400));
     return List.from(_mockDogs);
   }
 
   @override
   Future<DogModel> registerDog(DogModel dog) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(milliseconds: 300));
     _mockDogs.insert(0, dog);
     return dog;
   }
 
   @override
   Future<DogModel> updateDog(DogModel dog) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(milliseconds: 300));
     final index = _mockDogs.indexWhere((d) => d.id == dog.id);
     if (index != -1) {
       _mockDogs[index] = dog;

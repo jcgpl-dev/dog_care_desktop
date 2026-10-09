@@ -1,9 +1,11 @@
-import 'package:dog_care_desktop/core/usecases/usecase.dart';
-import 'package:dog_care_desktop/features/dogs/domain/entities/dog.dart';
-import 'package:dog_care_desktop/features/dogs/domain/usecases/delete_dog.dart';
-import 'package:dog_care_desktop/features/dogs/domain/usecases/get_dogs.dart';
-import 'package:dog_care_desktop/features/dogs/domain/usecases/register_dog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
+
+import '../../../../core/usecases/usecase.dart';
+import '../../domain/entities/dog.dart';
+import '../../domain/usecases/delete_dog.dart';
+import '../../domain/usecases/get_dogs.dart';
+import '../../domain/usecases/register_dog.dart';
 
 part 'dogs_event.dart';
 part 'dogs_state.dart';
@@ -22,7 +24,6 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     on<AddDogRequested>(_onAddDog);
     on<DeleteDogRequested>(_onDeleteDog);
     on<SearchDogsQueryChanged>(_onSearchQueryChanged);
-    on<FilterDogsByBarangayChanged>(_onFilterBarangayChanged);
   }
 
   Future<void> _onFetchDogs(
@@ -75,33 +76,15 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     }
   }
 
-  void _onFilterBarangayChanged(
-    FilterDogsByBarangayChanged event,
-    Emitter<DogsState> emit,
-  ) {
-    if (state is DogsLoaded) {
-      final currentState = state as DogsLoaded;
-      emit(
-        _applyFilters(currentState.copyWith(selectedBarangay: event.barangay)),
-      );
-    }
-  }
-
   DogsLoaded _applyFilters(DogsLoaded loadedState) {
     final query = loadedState.searchQuery.toLowerCase();
-    final barangay = loadedState.selectedBarangay;
 
     final filtered = loadedState.dogs.where((dog) {
-      final matchesSearch =
-          dog.name.toLowerCase().contains(query) ||
+      return dog.petName.toLowerCase().contains(query) ||
           dog.breed.toLowerCase().contains(query) ||
           dog.ownerName.toLowerCase().contains(query) ||
+          dog.address.toLowerCase().contains(query) ||
           dog.id.toLowerCase().contains(query);
-
-      final matchesBarangay =
-          barangay == null || barangay.isEmpty || dog.barangay == barangay;
-
-      return matchesSearch && matchesBarangay;
     }).toList();
 
     return loadedState.copyWith(filteredDogs: filtered);

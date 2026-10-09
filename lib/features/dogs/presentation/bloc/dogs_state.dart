@@ -1,7 +1,10 @@
 part of 'dogs_bloc.dart';
 
-abstract class DogsState {
+abstract class DogsState extends Equatable {
   const DogsState();
+
+  @override
+  List<Object?> get props => [];
 }
 
 class DogsInitial extends DogsState {
@@ -16,31 +19,33 @@ class DogsLoaded extends DogsState {
   final List<Dog> dogs;
   final List<Dog> filteredDogs;
   final String searchQuery;
-  final String? selectedBarangay;
 
   const DogsLoaded({
     required this.dogs,
     required this.filteredDogs,
     this.searchQuery = '',
-    this.selectedBarangay,
   });
 
   DogsLoaded copyWith({
     List<Dog>? dogs,
     List<Dog>? filteredDogs,
     String? searchQuery,
-    String? selectedBarangay,
   }) {
     return DogsLoaded(
       dogs: dogs ?? this.dogs,
       filteredDogs: filteredDogs ?? this.filteredDogs,
       searchQuery: searchQuery ?? this.searchQuery,
-      selectedBarangay: selectedBarangay ?? this.selectedBarangay,
     );
   }
+
+  @override
+  List<Object?> get props => [dogs, filteredDogs, searchQuery];
 }
 
 class DogsError extends DogsState {
   final String message;
   const DogsError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

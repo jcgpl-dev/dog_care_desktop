@@ -1,57 +1,46 @@
 import 'package:equatable/equatable.dart';
 
-enum DogGender { male, female }
-
-enum DogStatus { healthy, atRisk, critical }
+enum DogSex { male, female }
 
 class Dog extends Equatable {
   final String id;
-  final String name;
+  final String? photoUrl;
+  final String petName;
+  final String species;
   final String breed;
-  final String color;
+  final DateTime birthdate;
+  final DogSex sex;
   final String ownerName;
-  final String ownerContact;
-  final String barangay; // Katipunan Barangay locality
-  final int ageYears;
-  final double weightKg;
-  final DogGender gender;
-  final DogStatus status;
-  final bool isVaccinated;
-  final String? avatarUrl;
+  final String address;
+  final String contactNumber;
   final DateTime registeredAt;
 
   const Dog({
     required this.id,
-    required this.name,
+    this.photoUrl,
+    required this.petName,
+    required this.species,
     required this.breed,
-    required this.color,
+    required this.birthdate,
+    required this.sex,
     required this.ownerName,
-    required this.ownerContact,
-    required this.barangay,
-    required this.ageYears,
-    required this.weightKg,
-    required this.gender,
-    required this.status,
-    required this.isVaccinated,
-    this.avatarUrl,
+    required this.address,
+    required this.contactNumber,
     required this.registeredAt,
   });
 
   @override
   List<Object?> get props => [
     id,
-    name,
+    photoUrl,
+    petName,
+    species,
     breed,
-    color,
+    birthdate,
+    sex,
     ownerName,
-    ownerContact,
-    barangay,
-    ageYears,
-    weightKg,
-    gender,
-    status,
-    isVaccinated,
-    avatarUrl,
+    address,
+    contactNumber,
     registeredAt,
   ];
 }
