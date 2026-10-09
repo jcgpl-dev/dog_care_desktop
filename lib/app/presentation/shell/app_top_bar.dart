@@ -1,8 +1,8 @@
+// lib/app/presentation/shell/app_top_bar.dart
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:dog_care_desktop/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../config/theme/app_colors.dart';
@@ -10,47 +10,14 @@ import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/cubit/theme_cubit.dart';
 import '../../../../core/presentation/widgets/app_window/window_controls.dart';
 import 'cubit/sidebar_cubit.dart';
+import 'widgets/app_breadcrumbs.dart';
 
 class AppTopBar extends StatelessWidget {
   const AppTopBar({super.key});
 
-  String _getPageTitle(String location) {
-    switch (location) {
-      case '/dashboard':
-        return 'Dashboard';
-      case '/dogs':
-        return 'Dogs Management';
-      case '/owners':
-        return 'Owners';
-      case '/health-records':
-        return 'Health Records';
-      case '/services':
-        return 'Services Overview';
-      case '/vaccinations':
-        return 'Vaccinations';
-      case '/deworming':
-        return 'Deworming';
-      case '/treatments':
-        return 'Treatments';
-      case '/appointments':
-        return 'Appointments';
-      case '/reports':
-        return 'Reports';
-      case '/alerts':
-        return 'Alerts';
-      case '/manage-users':
-        return 'User Management';
-      case '/settings':
-        return 'Settings';
-      default:
-        return 'Dashboard';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final currentPath = GoRouterState.of(context).matchedLocation;
 
     return Container(
       height: AppDimensions.topBarHeight,
@@ -71,12 +38,7 @@ class AppTopBar extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(left: AppDimensions.spacing8),
-                  child: Text(
-                    _getPageTitle(currentPath),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: const AppBreadcrumbs(),
                 ),
               ),
             ),

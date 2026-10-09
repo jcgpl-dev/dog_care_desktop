@@ -74,25 +74,28 @@ class AppRouter {
               pageBuilder: (context, state) =>
                   const NoTransitionPage(child: HealthRecordsPage()),
             ),
+            // lib/config/router/app_router.dart
             GoRoute(
               path: '/services',
               pageBuilder: (context, state) =>
                   const NoTransitionPage(child: ServicesPage()),
-            ),
-            GoRoute(
-              path: '/vaccinations',
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: VaccinationsPage()),
-            ),
-            GoRoute(
-              path: '/deworming',
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: DewormingPage()),
-            ),
-            GoRoute(
-              path: '/treatments',
-              pageBuilder: (context, state) =>
-                  const NoTransitionPage(child: TreatmentsPage()),
+              routes: [
+                GoRoute(
+                  path: 'vaccinations',
+                  pageBuilder: (context, state) =>
+                      const NoTransitionPage(child: VaccinationsPage()),
+                ),
+                GoRoute(
+                  path: 'deworming',
+                  pageBuilder: (context, state) =>
+                      const NoTransitionPage(child: DewormingPage()),
+                ),
+                GoRoute(
+                  path: 'treatments',
+                  pageBuilder: (context, state) =>
+                      const NoTransitionPage(child: TreatmentsPage()),
+                ),
+              ],
             ),
             GoRoute(
               path: '/appointments',

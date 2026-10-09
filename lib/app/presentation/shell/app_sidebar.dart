@@ -47,21 +47,21 @@ class _AppSidebarState extends State<AppSidebar> {
       children: [
         AppNavigationItem(
           label: 'Vaccinations',
-          icon: Icon(PhosphorIcons.syringe(PhosphorIconsStyle.bold), size: 18),
-          route: '/vaccinations',
+          icon: Icon(PhosphorIcons.syringe(PhosphorIconsStyle.bold), size: 20),
+          route: '/services/vaccinations',
         ),
         AppNavigationItem(
           label: 'Deworming',
-          icon: Icon(PhosphorIcons.pill(PhosphorIconsStyle.bold), size: 18),
-          route: '/deworming',
+          icon: Icon(PhosphorIcons.pill(PhosphorIconsStyle.bold), size: 20),
+          route: '/services/deworming',
         ),
         AppNavigationItem(
           label: 'Treatments',
           icon: Icon(
             PhosphorIcons.stethoscope(PhosphorIconsStyle.bold),
-            size: 18,
+            size: 20,
           ),
-          route: '/treatments',
+          route: '/services/treatments',
         ),
       ],
     ),
