@@ -6,7 +6,6 @@ class Dog extends Equatable {
   final String id;
   final String? photoUrl;
   final String petName;
-  final String species;
   final String breed;
   final DateTime birthdate;
   final DogSex sex;
@@ -19,7 +18,6 @@ class Dog extends Equatable {
     required this.id,
     this.photoUrl,
     required this.petName,
-    required this.species,
     required this.breed,
     required this.birthdate,
     required this.sex,
@@ -34,7 +32,6 @@ class Dog extends Equatable {
     id,
     photoUrl,
     petName,
-    species,
     breed,
     birthdate,
     sex,

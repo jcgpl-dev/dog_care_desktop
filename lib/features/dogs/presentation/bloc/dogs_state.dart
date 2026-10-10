@@ -19,27 +19,31 @@ class DogsLoaded extends DogsState {
   final List<Dog> dogs;
   final List<Dog> filteredDogs;
   final String searchQuery;
+  final Set<String> selectedDogIds;
 
   const DogsLoaded({
     required this.dogs,
     required this.filteredDogs,
     this.searchQuery = '',
+    this.selectedDogIds = const {},
   });
 
   DogsLoaded copyWith({
     List<Dog>? dogs,
     List<Dog>? filteredDogs,
     String? searchQuery,
+    Set<String>? selectedDogIds,
   }) {
     return DogsLoaded(
       dogs: dogs ?? this.dogs,
       filteredDogs: filteredDogs ?? this.filteredDogs,
       searchQuery: searchQuery ?? this.searchQuery,
+      selectedDogIds: selectedDogIds ?? this.selectedDogIds,
     );
   }
 
   @override
-  List<Object?> get props => [dogs, filteredDogs, searchQuery];
+  List<Object?> get props => [dogs, filteredDogs, searchQuery, selectedDogIds];
 }
 
 class DogsError extends DogsState {
@@ -49,5 +53,3 @@ class DogsError extends DogsState {
   @override
   List<Object?> get props => [message];
 }
-
-

@@ -65,7 +65,10 @@ class AppTopBar extends StatelessWidget {
             splashRadius: AppDimensions.spacing16 + AppDimensions.spacing2,
             iconSize: AppDimensions.spacing20,
             onPressed: () => context.read<SidebarCubit>().toggleSidebar(),
-            icon: Icon(PhosphorIcons.list(PhosphorIconsStyle.bold)),
+            icon: Icon(
+              PhosphorIcons.list(PhosphorIconsStyle.bold),
+              color: AppColors.primary,
+            ),
           ),
         );
       },

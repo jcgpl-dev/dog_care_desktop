@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/app_text_styles.dart';
+import '../../../../core/presentation/widgets/buttons/app_button.dart';
+import '../../../../core/presentation/widgets/inputs/app_text_field.dart';
 import '../../domain/entities/dog.dart';
 import '../bloc/dogs_bloc.dart';
 
@@ -27,7 +29,6 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _petNameController;
-  late TextEditingController _speciesController;
   late TextEditingController _breedController;
   late TextEditingController _ownerNameController;
   late TextEditingController _addressController;
@@ -41,7 +42,6 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
     super.initState();
     final dog = widget.dogToEdit;
     _petNameController = TextEditingController(text: dog?.petName ?? '');
-    _speciesController = TextEditingController(text: dog?.species ?? 'Dog');
     _breedController = TextEditingController(text: dog?.breed ?? '');
     _ownerNameController = TextEditingController(text: dog?.ownerName ?? '');
     _addressController = TextEditingController(text: dog?.address ?? '');
@@ -57,12 +57,18 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
   @override
   void dispose() {
     _petNameController.dispose();
-    _speciesController.dispose();
     _breedController.dispose();
     _ownerNameController.dispose();
     _addressController.dispose();
     _contactNumberController.dispose();
     super.dispose();
+  }
+
+  String? _requiredValidator(String? val) {
+    if (val == null || val.trim().isEmpty) {
+      return 'Field is required';
+    }
+    return null;
   }
 
   @override
@@ -120,26 +126,22 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildTextField(
+                    AppTextField(
                       controller: _petNameController,
                       label: 'Pet Name *',
                       hint: 'e.g. Bruno',
+                      validator: _requiredValidator,
                     ),
                     const SizedBox(height: AppDimensions.spacing16),
-                    _buildTextField(
-                      controller: _speciesController,
-                      label: 'Species *',
-                      hint: 'e.g. Dog',
-                    ),
-                    const SizedBox(height: AppDimensions.spacing16),
-                    _buildTextField(
+                    AppTextField(
                       controller: _breedController,
                       label: 'Breed *',
                       hint: 'e.g. Askal / Aspin',
+                      validator: _requiredValidator,
                     ),
                     const SizedBox(height: AppDimensions.spacing16),
                     // Birthdate Picker
-                    Text('Birthdate *', style: AppTextStyles.labelLarge),
+                    Text('Birthdate *', style: AppTextStyles.labelMedium),
                     const SizedBox(height: AppDimensions.spacing8),
                     InkWell(
                       onTap: () async {
@@ -153,16 +155,25 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
                           setState(() => _selectedBirthdate = picked);
                         }
                       },
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusSmall,
+                      ),
                       child: Container(
-                        padding: const EdgeInsets.all(AppDimensions.spacing12),
+                        height: AppDimensions.buttonHeight,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimensions.spacing16,
+                        ),
                         decoration: BoxDecoration(
+                          color: isDarkMode
+                              ? AppColors.darkFieldBackground
+                              : AppColors.surface,
                           border: Border.all(
                             color: isDarkMode
                                 ? AppColors.darkBorder
                                 : AppColors.border,
                           ),
                           borderRadius: BorderRadius.circular(
-                            AppDimensions.radiusMedium,
+                            AppDimensions.radiusSmall,
                           ),
                         ),
                         child: Row(
@@ -185,7 +196,7 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
                     ),
                     const SizedBox(height: AppDimensions.spacing16),
                     // Sex Selector
-                    Text('Sex *', style: AppTextStyles.labelLarge),
+                    Text('Sex *', style: AppTextStyles.labelMedium),
                     const SizedBox(height: AppDimensions.spacing8),
                     Row(
                       children: [
@@ -194,6 +205,7 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
                             title: const Text('Male'),
                             value: DogSex.male,
                             groupValue: _selectedSex,
+                            contentPadding: EdgeInsets.zero,
                             onChanged: (val) =>
                                 setState(() => _selectedSex = val!),
                           ),
@@ -203,6 +215,7 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
                             title: const Text('Female'),
                             value: DogSex.female,
                             groupValue: _selectedSex,
+                            contentPadding: EdgeInsets.zero,
                             onChanged: (val) =>
                                 setState(() => _selectedSex = val!),
                           ),
@@ -210,29 +223,33 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
                       ],
                     ),
                     const SizedBox(height: AppDimensions.spacing16),
-                    _buildTextField(
+                    AppTextField(
                       controller: _ownerNameController,
                       label: 'Owner Name *',
                       hint: 'e.g. Juan Dela Cruz',
+                      validator: _requiredValidator,
                     ),
                     const SizedBox(height: AppDimensions.spacing16),
-                    _buildTextField(
+                    AppTextField(
                       controller: _addressController,
                       label: 'Address *',
                       hint: 'e.g. Barangay Poblacion',
+                      validator: _requiredValidator,
                     ),
                     const SizedBox(height: AppDimensions.spacing16),
-                    _buildTextField(
+                    AppTextField(
                       controller: _contactNumberController,
                       label: 'Contact Number *',
                       hint: 'e.g. +63 917 123 4567',
+                      keyboardType: TextInputType.phone,
+                      validator: _requiredValidator,
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          // Footer Buttons
+          // Footer Buttons using AppButton
           Container(
             padding: const EdgeInsets.all(AppDimensions.spacing20),
             decoration: BoxDecoration(
@@ -243,78 +260,47 @@ class _DogRegistrationSidebarState extends State<DogRegistrationSidebar> {
               ),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                OutlinedButton(
-                  onPressed: widget.onClose,
-                  child: const Text('Cancel'),
+                Expanded(
+                  child: AppButton(
+                    label: 'Cancel',
+                    variant: AppButtonVariant.outlined,
+                    onPressed: widget.onClose,
+                  ),
                 ),
                 const SizedBox(width: AppDimensions.spacing12),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      final dog = Dog(
-                        id:
-                            widget.dogToEdit?.id ??
-                            'DOG-2026-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}',
-                        petName: _petNameController.text,
-                        species: _speciesController.text,
-                        breed: _breedController.text,
-                        birthdate: _selectedBirthdate,
-                        sex: _selectedSex,
-                        ownerName: _ownerNameController.text,
-                        address: _addressController.text,
-                        contactNumber: _contactNumberController.text,
-                        registeredAt:
-                            widget.dogToEdit?.registeredAt ?? DateTime.now(),
-                      );
+                Expanded(
+                  child: AppButton(
+                    label: isEditing ? 'Save Changes' : 'Register Dog',
+                    variant: AppButtonVariant.primary,
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        final dog = Dog(
+                          id:
+                              widget.dogToEdit?.id ??
+                              'DOG-2026-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}',
+                          petName: _petNameController.text,
+                          breed: _breedController.text,
+                          birthdate: _selectedBirthdate,
+                          sex: _selectedSex,
+                          ownerName: _ownerNameController.text,
+                          address: _addressController.text,
+                          contactNumber: _contactNumberController.text,
+                          registeredAt:
+                              widget.dogToEdit?.registeredAt ?? DateTime.now(),
+                        );
 
-                      if (isEditing) {
-                        context.read<DogsBloc>().add(
-                          AddDogRequested(dog),
-                        ); // or update event
-                      } else {
                         context.read<DogsBloc>().add(AddDogRequested(dog));
+                        widget.onClose();
                       }
-                      widget.onClose();
-                    }
-                  },
-                  child: Text(isEditing ? 'Save Changes' : 'Register Dog'),
+                    },
+                  ),
                 ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: AppTextStyles.labelLarge),
-        const SizedBox(height: AppDimensions.spacing8),
-        TextFormField(
-          controller: controller,
-          validator: (val) =>
-              val == null || val.isEmpty ? 'Field required' : null,
-          decoration: InputDecoration(
-            hintText: hint,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppDimensions.spacing16,
-              vertical: AppDimensions.spacing12,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

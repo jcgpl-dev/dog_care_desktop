@@ -24,6 +24,9 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     on<AddDogRequested>(_onAddDog);
     on<DeleteDogRequested>(_onDeleteDog);
     on<SearchDogsQueryChanged>(_onSearchQueryChanged);
+    on<ToggleDogSelection>(_onToggleDogSelection);
+    on<ToggleSelectAllDogs>(_onToggleSelectAllDogs);
+    on<ClearDogSelections>(_onClearDogSelections);
   }
 
   Future<void> _onFetchDogs(
@@ -38,20 +41,15 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     );
   }
 
-  Future<void> _onAddDog(
-    AddDogRequested event,
-    Emitter<DogsState> emit,
-  ) async {
+  Future<void> _onAddDog(AddDogRequested event, Emitter<DogsState> emit) async {
     if (state is DogsLoaded) {
       final currentState = state as DogsLoaded;
       final result = await registerDog(event.dog);
-      result.fold(
-        (failure) => emit(DogsError(failure.message)),
-        (newDog) {
-          final updatedDogs = List<Dog>.from(currentState.dogs)..insert(0, newDog);
-          emit(_applyFilters(currentState.copyWith(dogs: updatedDogs)));
-        },
-      );
+      result.fold((failure) => emit(DogsError(failure.message)), (newDog) {
+        final updatedDogs = List<Dog>.from(currentState.dogs)
+          ..insert(0, newDog);
+        emit(_applyFilters(currentState.copyWith(dogs: updatedDogs)));
+      });
     }
   }
 
@@ -62,13 +60,21 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     if (state is DogsLoaded) {
       final currentState = state as DogsLoaded;
       final result = await deleteDog(event.dogId);
-      result.fold(
-        (failure) => emit(DogsError(failure.message)),
-        (_) {
-          final updatedDogs = currentState.dogs.where((d) => d.id != event.dogId).toList();
-          emit(_applyFilters(currentState.copyWith(dogs: updatedDogs)));
-        },
-      );
+      result.fold((failure) => emit(DogsError(failure.message)), (_) {
+        final updatedDogs = currentState.dogs
+            .where((d) => d.id != event.dogId)
+            .toList();
+        final updatedSelection = Set<String>.from(currentState.selectedDogIds)
+          ..remove(event.dogId);
+        emit(
+          _applyFilters(
+            currentState.copyWith(
+              dogs: updatedDogs,
+              selectedDogIds: updatedSelection,
+            ),
+          ),
+        );
+      });
     }
   }
 
@@ -79,6 +85,48 @@ class DogsBloc extends Bloc<DogsEvent, DogsState> {
     if (state is DogsLoaded) {
       final currentState = state as DogsLoaded;
       emit(_applyFilters(currentState.copyWith(searchQuery: event.query)));
+    }
+  }
+
+  void _onToggleDogSelection(
+    ToggleDogSelection event,
+    Emitter<DogsState> emit,
+  ) {
+    if (state is DogsLoaded) {
+      final currentState = state as DogsLoaded;
+      final updatedSelection = Set<String>.from(currentState.selectedDogIds);
+      if (updatedSelection.contains(event.dogId)) {
+        updatedSelection.remove(event.dogId);
+      } else {
+        updatedSelection.add(event.dogId);
+      }
+      emit(currentState.copyWith(selectedDogIds: updatedSelection));
+    }
+  }
+
+  void _onToggleSelectAllDogs(
+    ToggleSelectAllDogs event,
+    Emitter<DogsState> emit,
+  ) {
+    if (state is DogsLoaded) {
+      final currentState = state as DogsLoaded;
+      final allFilteredIds = currentState.filteredDogs.map((d) => d.id).toSet();
+
+      if (currentState.selectedDogIds.length == allFilteredIds.length) {
+        emit(currentState.copyWith(selectedDogIds: {}));
+      } else {
+        emit(currentState.copyWith(selectedDogIds: allFilteredIds));
+      }
+    }
+  }
+
+  void _onClearDogSelections(
+    ClearDogSelections event,
+    Emitter<DogsState> emit,
+  ) {
+    if (state is DogsLoaded) {
+      final currentState = state as DogsLoaded;
+      emit(currentState.copyWith(selectedDogIds: {}));
     }
   }
 

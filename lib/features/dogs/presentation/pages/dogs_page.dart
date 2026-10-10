@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/dog.dart';
 import '../bloc/dogs_bloc.dart';
+import '../widgets/dogs_metric_cards.dart';
 import '../widgets/dogs_toolbar.dart';
 import '../widgets/dogs_data_table.dart';
 import '../widgets/dog_registration_sidebar.dart';
@@ -30,44 +31,69 @@ class _DogsPageState extends State<DogsPage> {
       body: Row(
         children: [
           Expanded(
-            child: Column(
-              children: [
-                DogsToolbar(
-                  onRegisterPressed: () {
-                    setState(() {
-                      _dogToEdit = null;
-                      _isSidebarOpen = true;
-                    });
-                  },
-                ),
-                Expanded(
-                  child: BlocBuilder<DogsBloc, DogsState>(
-                    builder: (context, state) {
-                      if (state is DogsLoading || state is DogsInitial) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is DogsLoaded) {
-                        return DogsDataTable(
-                          dogs: state.filteredDogs,
-                          onEditDog: (dog) {
-                            setState(() {
-                              _dogToEdit = dog;
-                              _isSidebarOpen = true;
-                            });
-                          },
-                          onDeleteDog: (dogId) {
-                            context.read<DogsBloc>().add(
-                              DeleteDogRequested(dogId),
-                            );
-                          },
-                        );
-                      } else if (state is DogsError) {
-                        return Center(child: Text('Error: ${state.message}'));
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ),
-              ],
+            child: BlocBuilder<DogsBloc, DogsState>(
+              builder: (context, state) {
+                List<Dog> allDogs = [];
+                List<Dog> filteredDogs = [];
+                Set<String> selectedDogIds = {};
+
+                if (state is DogsLoaded) {
+                  allDogs = state.dogs;
+                  filteredDogs = state.filteredDogs;
+                  selectedDogIds = state.selectedDogIds;
+                }
+
+                return Column(
+                  children: [
+                    // 1. Top Metrics Summary Cards
+                    if (state is DogsLoaded || state is DogsLoading)
+                      DogsMetricCards(dogs: allDogs),
+
+                    // 2. Action Toolbar (Search & Register CTA)
+                    DogsToolbar(
+                      onRegisterPressed: () {
+                        setState(() {
+                          _dogToEdit = null;
+                          _isSidebarOpen = true;
+                        });
+                      },
+                    ),
+
+                    // 3. Data Table with Checkboxes & Bulk Actions
+                    Expanded(
+                      child: state is DogsLoading || state is DogsInitial
+                          ? const Center(child: CircularProgressIndicator())
+                          : state is DogsError
+                              ? Center(child: Text('Error: ${state.message}'))
+                              : DogsDataTable(
+                                  dogs: filteredDogs,
+                                  selectedDogIds: selectedDogIds,
+                                  onEditDog: (dog) {
+                                    setState(() {
+                                      _dogToEdit = dog;
+                                      _isSidebarOpen = true;
+                                    });
+                                  },
+                                  onDeleteDog: (dogId) {
+                                    context.read<DogsBloc>().add(
+                                          DeleteDogRequested(dogId),
+                                        );
+                                  },
+                                  onBulkDelete: () {
+                                    for (final id in selectedDogIds) {
+                                      context.read<DogsBloc>().add(
+                                            DeleteDogRequested(id),
+                                          );
+                                    }
+                                    context.read<DogsBloc>().add(
+                                          const ClearDogSelections(),
+                                        );
+                                  },
+                                ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           if (_isSidebarOpen)
