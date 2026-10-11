@@ -15,21 +15,9 @@ class DogsToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppDimensions.spacing24,
-        vertical: AppDimensions.spacing16,
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: isDarkMode ? AppColors.darkBorder : AppColors.border,
-          ),
-        ),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacing24),
+
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

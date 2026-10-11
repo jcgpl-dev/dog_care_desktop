@@ -1,3 +1,4 @@
+import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -64,32 +65,37 @@ class _DogsPageState extends State<DogsPage> {
                       child: state is DogsLoading || state is DogsInitial
                           ? const Center(child: CircularProgressIndicator())
                           : state is DogsError
-                              ? Center(child: Text('Error: ${state.message}'))
-                              : DogsDataTable(
-                                  dogs: filteredDogs,
-                                  selectedDogIds: selectedDogIds,
-                                  onEditDog: (dog) {
-                                    setState(() {
-                                      _dogToEdit = dog;
-                                      _isSidebarOpen = true;
-                                    });
-                                  },
-                                  onDeleteDog: (dogId) {
+                          ? Center(child: Text('Error: ${state.message}'))
+                          : Padding(
+                              padding: const EdgeInsets.all(
+                                AppDimensions.spacing24,
+                              ),
+                              child: DogsDataTable(
+                                dogs: filteredDogs,
+                                selectedDogIds: selectedDogIds,
+                                onEditDog: (dog) {
+                                  setState(() {
+                                    _dogToEdit = dog;
+                                    _isSidebarOpen = true;
+                                  });
+                                },
+                                onDeleteDog: (dogId) {
+                                  context.read<DogsBloc>().add(
+                                    DeleteDogRequested(dogId),
+                                  );
+                                },
+                                onBulkDelete: () {
+                                  for (final id in selectedDogIds) {
                                     context.read<DogsBloc>().add(
-                                          DeleteDogRequested(dogId),
-                                        );
-                                  },
-                                  onBulkDelete: () {
-                                    for (final id in selectedDogIds) {
-                                      context.read<DogsBloc>().add(
-                                            DeleteDogRequested(id),
-                                          );
-                                    }
-                                    context.read<DogsBloc>().add(
-                                          const ClearDogSelections(),
-                                        );
-                                  },
-                                ),
+                                      DeleteDogRequested(id),
+                                    );
+                                  }
+                                  context.read<DogsBloc>().add(
+                                    const ClearDogSelections(),
+                                  );
+                                },
+                              ),
+                            ),
                     ),
                   ],
                 );
