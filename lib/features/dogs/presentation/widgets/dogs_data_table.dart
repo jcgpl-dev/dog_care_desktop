@@ -9,7 +9,7 @@ import '../../../../config/theme/app_text_styles.dart';
 import '../../domain/entities/dog.dart';
 import '../bloc/dogs_bloc.dart';
 
-class DogsDataTable extends StatelessWidget {
+class DogsDataTable extends StatefulWidget {
   final List<Dog> dogs;
   final Set<String> selectedDogIds;
   final Function(Dog) onEditDog;
@@ -26,11 +26,18 @@ class DogsDataTable extends StatelessWidget {
   });
 
   @override
+  State<DogsDataTable> createState() => _DogsDataTableState();
+}
+
+class _DogsDataTableState extends State<DogsDataTable> {
+  int _currentPage = 0;
+  int _rowsPerPage = 10;
+
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final allSelected = dogs.isNotEmpty && selectedDogIds.length == dogs.length;
 
-    if (dogs.isEmpty) {
+    if (widget.dogs.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -52,200 +59,300 @@ class DogsDataTable extends StatelessWidget {
       );
     }
 
+    // Pagination calculations
+    final totalRecords = widget.dogs.length;
+    final totalPages = (totalRecords / _rowsPerPage).ceil();
+    if (_currentPage >= totalPages && totalPages > 0) {
+      _currentPage = totalPages - 1;
+    }
+
+    final startIndex = _currentPage * _rowsPerPage;
+    final endIndex = (startIndex + _rowsPerPage).clamp(0, totalRecords);
+    final paginatedDogs = widget.dogs.sublist(startIndex, endIndex);
+
     return Stack(
       children: [
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                  child: DataTable(
-                    showCheckboxColumn: true,
-                    onSelectAll: (selected) {
-                      context.read<DogsBloc>().add(const ToggleSelectAllDogs());
-                    },
-                    headingRowHeight: AppDimensions.sidebarHeaderHeight,
-                    dataRowMinHeight: 52,
-                    dataRowMaxHeight: 52,
-                    horizontalMargin: AppDimensions.spacing24,
-                    columnSpacing: AppDimensions.spacing24,
-                    border: TableBorder(
-                      bottom: BorderSide(
-                        color: isDarkMode
-                            ? AppColors.darkBorder
-                            : AppColors.border,
-                      ),
-                      horizontalInside: BorderSide(
-                        color: isDarkMode
-                            ? AppColors.darkBorder
-                            : AppColors.border,
-                      ),
-                    ),
-                    headingRowColor: WidgetStateProperty.all(
-                      isDarkMode
-                          ? const Color(0xFF1E1E1E)
-                          : AppColors.surfaceVariant.withValues(alpha: 0.6),
-                    ),
-                    columns: const [
-                      DataColumn(label: Text('ID')),
-                      DataColumn(label: Text('Pet Name')),
+        Column(
+          children: [
+            // Table content wrapped in Expanded to fill space cleanly
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: constraints.maxWidth,
+                        ),
+                        child: DataTable(
+                          showCheckboxColumn: true,
+                          onSelectAll: (selected) {
+                            context.read<DogsBloc>().add(
+                              const ToggleSelectAllDogs(),
+                            );
+                          },
+                          headingRowHeight: AppDimensions.sidebarHeaderHeight,
+                          dataRowMinHeight: 52,
+                          dataRowMaxHeight: 52,
+                          horizontalMargin: AppDimensions.spacing24,
+                          columnSpacing: AppDimensions.spacing24,
 
-                      DataColumn(label: Text('Breed')),
-                      DataColumn(label: Text('Birthdate')),
-                      DataColumn(label: Text('Sex')),
-                      DataColumn(label: Text('Owner Name')),
-                      DataColumn(label: Text('Address')),
-                      DataColumn(label: Text('Contact Number')),
-                      DataColumn(label: Text('Actions'), numeric: true),
-                    ],
-                    rows: dogs.map((dog) {
-                      final isSelected = selectedDogIds.contains(dog.id);
-                      return DataRow(
-                        selected: isSelected,
-                        onSelectChanged: (selected) {
-                          context.read<DogsBloc>().add(
-                            ToggleDogSelection(dog.id),
-                          );
-                        },
-                        cells: [
-                          DataCell(
-                            Text(
+                          headingRowColor: WidgetStateProperty.all(
+                            isDarkMode
+                                ? const Color(0xFF1E1E1E)
+                                : AppColors.surfaceVariant,
+                          ),
+                          columns: const [
+                            DataColumn(label: Text('Pet Name')),
+                            DataColumn(label: Text('Breed')),
+                            DataColumn(label: Text('Birthdate')),
+                            DataColumn(label: Text('Sex')),
+                            DataColumn(label: Text('Owner Name')),
+                            DataColumn(label: Text('Address')),
+                            DataColumn(label: Text('Contact Number')),
+                            DataColumn(
+                              label: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text('Actions'),
+                              ),
+                            ),
+                          ],
+                          rows: paginatedDogs.map((dog) {
+                            final isSelected = widget.selectedDogIds.contains(
                               dog.id,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CircleAvatar(
-                                  radius: AppDimensions.spacing12,
-                                  backgroundColor: AppColors.primaryContainer,
-                                  child: Text(
-                                    dog.petName.isNotEmpty
-                                        ? dog.petName[0]
-                                        : 'D',
-                                    style: AppTextStyles.labelSmall.copyWith(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: AppDimensions.spacing8),
-                                Text(
-                                  dog.petName,
-                                  style: AppTextStyles.titleSmall.copyWith(
-                                    color: isDarkMode
-                                        ? AppColors.darkText
-                                        : AppColors.textPrimary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          DataCell(
-                            Text(dog.breed, style: AppTextStyles.bodyMedium),
-                          ),
-                          DataCell(
-                            Text(
-                              DateFormat('yyyy-MM-dd').format(dog.birthdate),
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          ),
-                          DataCell(
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppDimensions.spacing8,
-                                vertical: AppDimensions.spacing2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: dog.sex == DogSex.male
-                                    ? AppColors.info.withValues(alpha: 0.15)
-                                    : AppColors.secondary.withValues(
-                                        alpha: 0.15,
+                            );
+                            return DataRow(
+                              selected: isSelected,
+                              onSelectChanged: (selected) {
+                                context.read<DogsBloc>().add(
+                                  ToggleDogSelection(dog.id),
+                                );
+                              },
+                              cells: [
+                                DataCell(
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: AppDimensions.spacing16,
+                                        backgroundColor:
+                                            AppColors.primaryContainer,
+                                        child: Text(
+                                          dog.petName.isNotEmpty
+                                              ? dog.petName[0]
+                                              : 'D',
+                                          style: AppTextStyles.labelSmall
+                                              .copyWith(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
                                       ),
-                                borderRadius: BorderRadius.circular(
-                                  AppDimensions.radiusFull,
-                                ),
-                              ),
-                              child: Text(
-                                dog.sex.name.toUpperCase(),
-                                style: AppTextStyles.labelSmall.copyWith(
-                                  color: dog.sex == DogSex.male
-                                      ? AppColors.info
-                                      : AppColors.secondary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Text(
-                              dog.ownerName,
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Text(dog.address, style: AppTextStyles.bodyMedium),
-                          ),
-                          DataCell(
-                            Text(
-                              dog.contactNumber,
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          ),
-                          DataCell(
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: Icon(
-                                    PhosphorIcons.pencil(
-                                      PhosphorIconsStyle.bold,
-                                    ),
-                                    size: AppDimensions.spacing16,
-                                    color: AppColors.textSecondary,
+                                      const SizedBox(
+                                        width: AppDimensions.spacing8,
+                                      ),
+                                      Text(
+                                        dog.petName,
+                                        style: AppTextStyles.titleSmall
+                                            .copyWith(
+                                              color: isDarkMode
+                                                  ? AppColors.darkText
+                                                  : AppColors.textPrimary,
+                                            ),
+                                      ),
+                                    ],
                                   ),
-                                  tooltip: 'Edit Record',
-                                  onPressed: () => onEditDog(dog),
                                 ),
-                                IconButton(
-                                  icon: Icon(
-                                    PhosphorIcons.trash(
-                                      PhosphorIconsStyle.bold,
-                                    ),
-                                    size: AppDimensions.spacing16,
-                                    color: AppColors.error,
+                                DataCell(
+                                  Text(
+                                    dog.breed,
+                                    style: AppTextStyles.bodyMedium,
                                   ),
-                                  tooltip: 'Delete Record',
-                                  onPressed: () => onDeleteDog(dog.id),
+                                ),
+                                DataCell(
+                                  Text(
+                                    DateFormat(
+                                      'yyyy-MM-dd',
+                                    ).format(dog.birthdate),
+                                    style: AppTextStyles.bodyMedium,
+                                  ),
+                                ),
+                                DataCell(
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: AppDimensions.spacing8,
+                                      vertical: AppDimensions.spacing2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: dog.sex == DogSex.male
+                                          ? AppColors.info.withValues(
+                                              alpha: 0.15,
+                                            )
+                                          : AppColors.secondary.withValues(
+                                              alpha: 0.15,
+                                            ),
+                                      borderRadius: BorderRadius.circular(
+                                        AppDimensions.radiusFull,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      dog.sex.name.toUpperCase(),
+                                      style: AppTextStyles.labelSmall.copyWith(
+                                        color: dog.sex == DogSex.male
+                                            ? AppColors.info
+                                            : AppColors.secondary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    dog.ownerName,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    dog.address,
+                                    style: AppTextStyles.bodyMedium,
+                                  ),
+                                ),
+                                DataCell(
+                                  Text(
+                                    dog.contactNumber,
+                                    style: AppTextStyles.bodyMedium,
+                                  ),
+                                ),
+                                DataCell(
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(
+                                          PhosphorIcons.pencil(
+                                            PhosphorIconsStyle.bold,
+                                          ),
+                                          size: AppDimensions.spacing16,
+                                          color: AppColors.textSecondary,
+                                        ),
+                                        tooltip: 'Edit Record',
+                                        onPressed: () => widget.onEditDog(dog),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          PhosphorIcons.trash(
+                                            PhosphorIconsStyle.bold,
+                                          ),
+                                          size: AppDimensions.spacing16,
+                                          color: AppColors.error,
+                                        ),
+                                        tooltip: 'Delete Record',
+                                        onPressed: () =>
+                                            widget.onDeleteDog(dog.id),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            // Professional Footer Pagination Bar
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacing24,
+                vertical: AppDimensions.spacing8,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                border: Border(
+                  top: BorderSide(
+                    color: isDarkMode ? AppColors.darkBorder : AppColors.border,
                   ),
                 ),
               ),
-            );
-          },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Record count display
+                  Text(
+                    'Showing ${startIndex + 1} to $endIndex of $totalRecords records',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  // Rows per page & Pagination Controls
+                  Row(
+                    children: [
+                      Text(
+                        'Rows per page:',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(width: AppDimensions.spacing8),
+                      DropdownButton<int>(
+                        value: _rowsPerPage,
+                        underline: const SizedBox.shrink(),
+                        items: [5, 10, 20, 50].map((value) {
+                          return DropdownMenuItem<int>(
+                            value: value,
+                            child: Text(
+                              '$value',
+                              style: AppTextStyles.bodySmall,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              _rowsPerPage = newValue;
+                              _currentPage = 0;
+                            });
+                          }
+                        },
+                      ),
+                      const SizedBox(width: AppDimensions.spacing24),
+                      Text(
+                        'Page ${_currentPage + 1} of ${totalPages == 0 ? 1 : totalPages}',
+                        style: AppTextStyles.bodySmall,
+                      ),
+                      const SizedBox(width: AppDimensions.spacing12),
+                      IconButton(
+                        icon: const Icon(Icons.chevron_left, size: 20),
+                        onPressed: _currentPage > 0
+                            ? () => setState(() => _currentPage--)
+                            : null,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.chevron_right, size: 20),
+                        onPressed: _currentPage < totalPages - 1
+                            ? () => setState(() => _currentPage++)
+                            : null,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         // Floating Bulk Action Toolbar (Appears when items are selected)
-        if (selectedDogIds.isNotEmpty)
+        if (widget.selectedDogIds.isNotEmpty)
           Positioned(
-            bottom: AppDimensions.spacing24,
+            bottom: AppDimensions.spacing24 + 50, // Offset above pagination bar
             left: 0,
             right: 0,
             child: Center(
@@ -273,7 +380,7 @@ class DogsDataTable extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '${selectedDogIds.length} selected',
+                      '${widget.selectedDogIds.length} selected',
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -281,7 +388,7 @@ class DogsDataTable extends StatelessWidget {
                     ),
                     const SizedBox(width: AppDimensions.spacing24),
                     ElevatedButton.icon(
-                      onPressed: onBulkDelete,
+                      onPressed: widget.onBulkDelete,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.error,
                         foregroundColor: Colors.white,

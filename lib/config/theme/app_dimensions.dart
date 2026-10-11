@@ -53,4 +53,9 @@ class AppDimensions {
   static const loginLogoIconSize = 36.0;
   static const loginFormMaxWidth = 440.0;
   static const loginCardPadding = 32.0;
+
+  // card
+  static const metricCardHeightCompact = 88.0;
+  static const metricCardHeight = 104.0;
+  static const metricCardHeightExpanded = 128.0;
 }
