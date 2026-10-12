@@ -300,7 +300,7 @@ class _SidebarItem extends StatelessWidget {
             (item.hasChildren && currentPath.startsWith('${item.route}/')));
 
     final activeBgColor = isDarkMode
-        ? AppColors.primary.withValues(alpha: 0.18)
+        ? AppColors.primary.withValues(alpha: 0.10)
         : AppColors.primaryContainer;
     final activeItemColor = isDarkMode
         ? AppColors.primaryContainer

@@ -5,5 +5,5 @@ class AppWindow {
 
   static const Size initialSize = Size(1280, 800);
 
-  static const Size minimumSize = Size(1024, 700);
+  static const Size minimumSize = Size(1280, 800);
 }

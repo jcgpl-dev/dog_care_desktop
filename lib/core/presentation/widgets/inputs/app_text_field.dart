@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
+import 'package:flutter/services.dart';
 
 enum AppTextFieldVariant { standard, dark }
 
@@ -55,6 +56,7 @@ class AppTextField extends StatelessWidget {
   final double focusedBorderWidth;
   final EdgeInsetsGeometry? contentPadding;
 
+  final List<TextInputFormatter>? inputFormatters;
   const AppTextField({
     super.key,
     this.label,
@@ -92,6 +94,7 @@ class AppTextField extends StatelessWidget {
     this.borderRadius,
     this.focusedBorderWidth = 2,
     this.contentPadding,
+    this.inputFormatters,
   });
 
   @override

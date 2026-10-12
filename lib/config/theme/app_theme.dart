@@ -1,3 +1,4 @@
+import 'package:dog_care_desktop/config/theme/app_component_themes.dart';
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
@@ -7,20 +8,27 @@ import 'app_text_styles.dart';
 class AppTheme {
   AppTheme._();
 
-  // ===========================================================================
+  static final ColorScheme _lightScheme = ColorScheme.fromSeed(
+    seedColor: AppColors.primary,
+    brightness: Brightness.light,
+    surface: AppColors.surface,
+    surfaceContainer: AppColors.surfaceVariant,
+  ).copyWith(primary: AppColors.primary, onPrimary: Colors.white);
+
+  static final ColorScheme _darkScheme = ColorScheme.fromSeed(
+    seedColor: AppColors.primary,
+    brightness: Brightness.dark,
+    surface: const Color(0xFF1E1E1E),
+    surfaceContainer: const Color(0xFF252525),
+  ).copyWith(primary: AppColors.primary, onPrimary: Colors.white);
+
   // LIGHT THEME
-  // ===========================================================================
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     fontFamily: AppTextStyles.fontFamily,
     brightness: Brightness.light,
 
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
-      brightness: Brightness.light,
-      surface: AppColors.surface,
-      surfaceContainer: AppColors.surfaceVariant,
-    ),
+    colorScheme: _lightScheme,
 
     scaffoldBackgroundColor: AppColors.background,
 
@@ -102,12 +110,18 @@ class AppTheme {
       ),
     ),
 
-    popupMenuTheme: PopupMenuThemeData(
-      color: AppColors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        side: const BorderSide(color: AppColors.border),
-      ),
+    dialogTheme: AppComponentThemes.dialog(
+      _lightScheme,
+      border: AppColors.border,
+    ),
+    snackBarTheme: AppComponentThemes.snackBar(_lightScheme),
+    datePickerTheme: AppComponentThemes.datePicker(
+      _lightScheme,
+      border: AppColors.border,
+    ),
+    popupMenuTheme: AppComponentThemes.popupMenu(
+      _lightScheme,
+      border: AppColors.border,
     ),
 
     dividerTheme: const DividerThemeData(
@@ -125,29 +139,44 @@ class AppTheme {
     fontFamily: AppTextStyles.fontFamily,
     brightness: Brightness.dark,
 
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
-      brightness: Brightness.dark,
-      surface: const Color(0xFF1E1E1E),
-      surfaceContainer: const Color(0xFF252525),
-    ),
+    colorScheme: _darkScheme,
 
     scaffoldBackgroundColor: const Color(0xFF121212),
 
     textTheme: TextTheme(
-      displayLarge: AppTextStyles.displayLarge.copyWith(color: AppColors.darkText),
-      displayMedium: AppTextStyles.displayMedium.copyWith(color: AppColors.darkText),
-      headlineLarge: AppTextStyles.headlineLarge.copyWith(color: AppColors.darkText),
-      headlineMedium: AppTextStyles.headlineMedium.copyWith(color: AppColors.darkText),
+      displayLarge: AppTextStyles.displayLarge.copyWith(
+        color: AppColors.darkText,
+      ),
+      displayMedium: AppTextStyles.displayMedium.copyWith(
+        color: AppColors.darkText,
+      ),
+      headlineLarge: AppTextStyles.headlineLarge.copyWith(
+        color: AppColors.darkText,
+      ),
+      headlineMedium: AppTextStyles.headlineMedium.copyWith(
+        color: AppColors.darkText,
+      ),
       titleLarge: AppTextStyles.titleLarge.copyWith(color: AppColors.darkText),
-      titleMedium: AppTextStyles.titleMedium.copyWith(color: AppColors.darkText),
-      titleSmall: AppTextStyles.titleSmall.copyWith(color: AppColors.darkTextSecondary),
+      titleMedium: AppTextStyles.titleMedium.copyWith(
+        color: AppColors.darkText,
+      ),
+      titleSmall: AppTextStyles.titleSmall.copyWith(
+        color: AppColors.darkTextSecondary,
+      ),
       bodyLarge: AppTextStyles.bodyLarge.copyWith(color: AppColors.darkText),
-      bodyMedium: AppTextStyles.bodyMedium.copyWith(color: AppColors.darkTextSecondary),
-      bodySmall: AppTextStyles.bodySmall.copyWith(color: AppColors.darkTextHint),
+      bodyMedium: AppTextStyles.bodyMedium.copyWith(
+        color: AppColors.darkTextSecondary,
+      ),
+      bodySmall: AppTextStyles.bodySmall.copyWith(
+        color: AppColors.darkTextHint,
+      ),
       labelLarge: AppTextStyles.labelLarge.copyWith(color: AppColors.darkText),
-      labelMedium: AppTextStyles.labelMedium.copyWith(color: AppColors.darkTextSecondary),
-      labelSmall: AppTextStyles.labelSmall.copyWith(color: AppColors.darkTextHint),
+      labelMedium: AppTextStyles.labelMedium.copyWith(
+        color: AppColors.darkTextSecondary,
+      ),
+      labelSmall: AppTextStyles.labelSmall.copyWith(
+        color: AppColors.darkTextHint,
+      ),
     ),
 
     appBarTheme: const AppBarTheme(
@@ -174,7 +203,10 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        borderSide: const BorderSide(color: AppColors.primaryContainer, width: 2),
+        borderSide: const BorderSide(
+          color: AppColors.primaryContainer,
+          width: 2,
+        ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
@@ -216,12 +248,18 @@ class AppTheme {
       ),
     ),
 
-    popupMenuTheme: PopupMenuThemeData(
-      color: const Color(0xFF252525),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-        side: const BorderSide(color: AppColors.darkBorder),
-      ),
+    dialogTheme: AppComponentThemes.dialog(
+      _darkScheme,
+      border: AppColors.darkBorder,
+    ),
+    snackBarTheme: AppComponentThemes.snackBar(_darkScheme),
+    datePickerTheme: AppComponentThemes.datePicker(
+      _darkScheme,
+      border: AppColors.darkBorder,
+    ),
+    popupMenuTheme: AppComponentThemes.popupMenu(
+      _darkScheme,
+      border: AppColors.darkBorder,
     ),
 
     dividerTheme: const DividerThemeData(

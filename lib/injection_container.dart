@@ -6,6 +6,7 @@ import 'package:dog_care_desktop/features/dogs/domain/repositories/dogs_reposito
 import 'package:dog_care_desktop/features/dogs/domain/usecases/delete_dog.dart';
 import 'package:dog_care_desktop/features/dogs/domain/usecases/get_dogs.dart';
 import 'package:dog_care_desktop/features/dogs/domain/usecases/register_dog.dart';
+import 'package:dog_care_desktop/features/dogs/domain/usecases/update_dog.dart';
 import 'package:dog_care_desktop/features/dogs/presentation/bloc/dogs_bloc.dart';
 import 'package:get_it/get_it.dart';
 
@@ -41,11 +42,17 @@ Future<void> init() async {
 
   // Features - Dogs
   sl.registerFactory(
-    () => DogsBloc(getDogs: sl(), registerDog: sl(), deleteDog: sl()),
+    () => DogsBloc(
+      getDogs: sl(),
+      registerDog: sl(),
+      deleteDog: sl(),
+      updateDog: sl(),
+    ),
   );
 
   sl.registerLazySingleton(() => GetDogs(sl()));
   sl.registerLazySingleton(() => RegisterDog(sl()));
+  sl.registerLazySingleton(() => UpdateDog(sl()));
   sl.registerLazySingleton(() => DeleteDog(sl()));
 
   sl.registerLazySingleton<DogsRepository>(

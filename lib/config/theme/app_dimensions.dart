@@ -34,6 +34,8 @@ class AppDimensions {
   static const radiusMedium = 10.0;
   static const radiusLarge = 16.0;
   static const radiusFull = 999.0;
+  //card radius
+  static const radiusCard = radiusSmall;
 
   // Component sizes
   static const buttonHeight = 44.0;
