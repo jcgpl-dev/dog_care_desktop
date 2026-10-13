@@ -37,6 +37,10 @@ class DogsTableHeader extends StatelessWidget {
         ? AppColors.darkTextSecondary
         : AppColors.textSecondary;
 
+    final textColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.textPrimary;
+
     return Container(
       height: DogsTableLayout.headerHeight,
       decoration: BoxDecoration(
@@ -100,7 +104,7 @@ class DogsTableHeader extends StatelessWidget {
                 'Actions',
                 style: AppTextStyles.labelMedium.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
+                  color: textColor,
                 ),
               ),
             ),
@@ -126,12 +130,16 @@ class _HeaderCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.textPrimary;
     final label = Text(
       column.label,
       overflow: TextOverflow.ellipsis,
       style: AppTextStyles.labelMedium.copyWith(
         fontWeight: FontWeight.w600,
-        color: isActive ? AppColors.primary : AppColors.textPrimary,
+        color: isActive ? AppColors.primary : textColor,
       ),
     );
 
