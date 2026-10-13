@@ -28,31 +28,58 @@ class DogsTableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Muted border colors specifically for the table header neutrality
+    final mutedBorderColor = isDark
+        ? AppColors.darkBorder.withValues(alpha: 0.4)
+        : AppColors.border.withValues(alpha: 0.6);
+
+    final hoverBorderColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.textSecondary;
+
     return Container(
       height: DogsTableLayout.headerHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
-        color: isDark
-            ? AppColors.primary.withValues(alpha: 0.07)
-            : AppColors.primary.withValues(alpha: 0.07),
-        // color: isDark
-        //     ? const Color(0xFF1E1E1E)
-        //     : AppColors.surfaceVariant.withValues(alpha: 0.6),
-        // border: Border(
-        //   bottom: BorderSide(
-        //     color: isDark ? AppColors.darkBorder : AppColors.border,
-        //   ),
-        // ),
+        color: AppColors.primary.withValues(alpha: 0.07),
       ),
       child: Row(
         children: [
           SizedBox(
             width: DogsTableLayout.checkboxWidth,
             child: Center(
-              child: Checkbox(
-                tristate: true,
-                value: selectionState,
-                onChanged: (_) => onToggleSelectAll(),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  checkboxTheme: CheckboxThemeData(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppDimensions.radiusSmall - 2,
+                      ),
+                    ),
+                    side: WidgetStateBorderSide.resolveWith((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return BorderSide.none;
+                      }
+                      if (states.contains(WidgetState.hovered)) {
+                        return BorderSide(color: hoverBorderColor, width: 1.5);
+                      }
+                      // Muted, non-distracting default border for headers
+                      return BorderSide(color: mutedBorderColor, width: 1.2);
+                    }),
+                    fillColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return AppColors.primary;
+                      }
+                      return Colors.transparent;
+                    }),
+                    checkColor: const WidgetStatePropertyAll(Colors.white),
+                  ),
+                ),
+                child: Checkbox(
+                  tristate: true,
+                  value: selectionState,
+                  onChanged: (_) => onToggleSelectAll(),
+                ),
               ),
             ),
           ),
@@ -66,7 +93,18 @@ class DogsTableHeader extends StatelessWidget {
                 onSort: onSort,
               ),
             ),
-          const SizedBox(width: DogsTableLayout.actionsWidth),
+          SizedBox(
+            width: DogsTableLayout.actionsWidth,
+            child: Center(
+              child: Text(
+                'Actions',
+                style: AppTextStyles.labelMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -93,7 +131,7 @@ class _HeaderCell extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
       style: AppTextStyles.labelMedium.copyWith(
         fontWeight: FontWeight.w600,
-        color: isActive ? AppColors.primary : AppColors.textSecondary,
+        color: isActive ? AppColors.primary : AppColors.textPrimary,
       ),
     );
 

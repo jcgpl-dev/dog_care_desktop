@@ -46,7 +46,7 @@ class DogPhotoPicker extends StatelessWidget {
           foregroundImage: hasPhoto
               ? ResizeImage(FileImage(File(photoPath!)), width: 144)
               : null,
-          onForegroundImageError: hasPhoto ? (_, __) {} : null,
+          onForegroundImageError: hasPhoto ? (_, _) {} : null,
           child: Icon(
             PhosphorIcons.camera(PhosphorIconsStyle.bold),
             color: AppColors.primary,
@@ -61,6 +61,14 @@ class DogPhotoPicker extends StatelessWidget {
                 spacing: AppDimensions.spacing8,
                 children: [
                   OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      // side: BorderSide(color: AppColors.border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppDimensions.radiusSmall,
+                        ),
+                      ),
+                    ),
                     onPressed: () => _pick(context),
                     child: Text(hasPhoto ? 'Change photo' : 'Upload photo'),
                   ),

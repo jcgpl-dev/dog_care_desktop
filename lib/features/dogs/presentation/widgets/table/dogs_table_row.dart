@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:dog_care_desktop/config/theme/app_colors.dart';
 import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
+import 'package:dog_care_desktop/config/theme/app_pallette.dart';
 import 'package:dog_care_desktop/config/theme/app_text_styles.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/buttons/row_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -10,8 +12,6 @@ import '../../../domain/entities/dog.dart';
 import '../../utils/dog_formatters.dart';
 import '../common/dog_sex_badge.dart';
 import 'dogs_table_columns.dart';
-
-enum _RowAction { edit, delete }
 
 class DogsTableRow extends StatelessWidget {
   const DogsTableRow({
@@ -33,7 +33,8 @@ class DogsTableRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? AppColors.darkText : AppColors.textPrimary;
-    final cellStyle = AppTextStyles.bodyMedium.copyWith(color: textColor);
+    final cellStyle = AppTextStyles.labelMedium.copyWith(color: textColor);
+    final c = context.colors;
 
     return Material(
       color: isSelected
@@ -105,7 +106,7 @@ class DogsTableRow extends StatelessWidget {
               // ),
               _cell(
                 DogsTableColumn.petName,
-                _PetCell(dog: dog, color: textColor),
+                _PetCell(dog: dog, color: textColor, cellStyle: cellStyle),
               ),
               _cell(
                 DogsTableColumn.breed,
@@ -131,7 +132,7 @@ class DogsTableRow extends StatelessWidget {
                 Text(
                   dog.ownerName,
                   overflow: TextOverflow.ellipsis,
-                  style: cellStyle.copyWith(fontWeight: FontWeight.w500),
+                  style: cellStyle,
                 ),
               ),
               _cell(
@@ -152,32 +153,21 @@ class DogsTableRow extends StatelessWidget {
               ),
               SizedBox(
                 width: DogsTableLayout.actionsWidth,
-                child: PopupMenuButton<_RowAction>(
-                  tooltip: 'Actions for ${dog.petName}',
-                  icon: Icon(
-                    PhosphorIcons.dotsThreeVertical(PhosphorIconsStyle.bold),
-                    size: AppDimensions.spacing20,
-                    color: AppColors.textSecondary,
-                  ),
-                  onSelected: (action) => switch (action) {
-                    _RowAction.edit => onOpen(),
-                    _RowAction.delete => onDelete(),
-                  },
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                      value: _RowAction.edit,
-                      child: _MenuLabel(
-                        icon: PhosphorIcons.pencil(PhosphorIconsStyle.bold),
-                        label: 'Edit',
-                      ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RowIconButton(
+                      icon: PhosphorIcons.pencilSimple(PhosphorIconsStyle.bold),
+                      tooltip: 'Edit ${dog.petName}',
+                      onPressed: onOpen,
+                      color: Colors.blueAccent,
                     ),
-                    PopupMenuItem(
-                      value: _RowAction.delete,
-                      child: _MenuLabel(
-                        icon: PhosphorIcons.trash(PhosphorIconsStyle.bold),
-                        label: 'Delete',
-                        color: AppColors.error,
-                      ),
+                    SizedBox(width: AppDimensions.spacing8),
+                    RowIconButton(
+                      icon: PhosphorIcons.trash(PhosphorIconsStyle.bold),
+                      tooltip: 'Delete ${dog.petName}',
+                      color: Colors.redAccent,
+                      onPressed: onDelete,
                     ),
                   ],
                 ),
@@ -199,10 +189,15 @@ class DogsTableRow extends StatelessWidget {
 }
 
 class _PetCell extends StatelessWidget {
-  const _PetCell({required this.dog, required this.color});
+  const _PetCell({
+    required this.dog,
+    required this.color,
+    required this.cellStyle,
+  });
 
   final Dog dog;
   final Color color;
+  final TextStyle cellStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -229,28 +224,9 @@ class _PetCell extends StatelessWidget {
           child: Text(
             dog.petName,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.titleSmall.copyWith(color: color),
+            style: cellStyle,
           ),
         ),
-      ],
-    );
-  }
-}
-
-class _MenuLabel extends StatelessWidget {
-  const _MenuLabel({required this.icon, required this.label, this.color});
-
-  final IconData icon;
-  final String label;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: color),
-        const SizedBox(width: AppDimensions.spacing12),
-        Text(label, style: TextStyle(color: color)),
       ],
     );
   }

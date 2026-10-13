@@ -60,6 +60,7 @@ class DogsQuery extends Equatable {
       dog.ownerName,
       dog.address,
       dog.contactNumber,
+      
     ].any((field) => field.toLowerCase().contains(needle));
   }
 

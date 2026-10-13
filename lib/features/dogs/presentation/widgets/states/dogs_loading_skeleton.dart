@@ -1,8 +1,6 @@
 import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
-/// Placeholder rows that match the table's rhythm, so the layout doesn't jump
-/// when data arrives (a bare spinner makes it jump).
 class DogsLoadingSkeleton extends StatelessWidget {
   const DogsLoadingSkeleton({super.key, this.rows = 8});
 

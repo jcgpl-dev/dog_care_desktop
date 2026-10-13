@@ -19,7 +19,7 @@ enum DogsTableColumn {
 
 abstract final class DogsTableLayout {
   static const double checkboxWidth = 56;
-  static const double actionsWidth = 64;
+  static const double actionsWidth = 80;
   static const double headerHeight = 48;
   static const double rowHeight = 56;
   static const double minWidth = 1040;
