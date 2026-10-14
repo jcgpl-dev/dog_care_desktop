@@ -7,17 +7,21 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class DogPhotoPicker extends StatelessWidget {
-  const DogPhotoPicker({
+class AppAvatarPicker extends StatelessWidget {
+  const AppAvatarPicker({
     super.key,
-    required this.photoPath,
+    required this.imagePath,
     required this.onChanged,
+    this.maxBytes = 5 * 1024 * 1024, // Default 5 MB
+    this.fallbackIcon,
+    this.helperText = 'Optional · JPG or PNG, up to 5 MB',
   });
 
-  final String? photoPath;
+  final String? imagePath;
   final ValueChanged<String?> onChanged;
-
-  static const _maxBytes = 5 * 1024 * 1024;
+  final int maxBytes;
+  final IconData? fallbackIcon;
+  final String helperText;
 
   Future<void> _pick(BuildContext context) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -25,9 +29,10 @@ class DogPhotoPicker extends StatelessWidget {
     final file = result?.files.single;
     if (file == null || file.path == null) return;
 
-    if (file.size > _maxBytes) {
+    if (file.size > maxBytes) {
+      final sizeMb = (maxBytes / (1024 * 1024)).toStringAsFixed(0);
       messenger.showSnackBar(
-        const SnackBar(content: Text('Photo must be 5 MB or smaller')),
+        SnackBar(content: Text('Image must be $sizeMb MB or smaller')),
       );
       return;
     }
@@ -36,19 +41,19 @@ class DogPhotoPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasPhoto = photoPath != null;
+    final hasImage = imagePath != null;
 
     return Row(
       children: [
         CircleAvatar(
           radius: 36,
           backgroundColor: AppColors.primaryContainer,
-          foregroundImage: hasPhoto
-              ? ResizeImage(FileImage(File(photoPath!)), width: 144)
+          foregroundImage: hasImage
+              ? ResizeImage(FileImage(File(imagePath!)), width: 144)
               : null,
-          onForegroundImageError: hasPhoto ? (_, _) {} : null,
+          onForegroundImageError: hasImage ? (_, _) {} : null,
           child: Icon(
-            PhosphorIcons.camera(PhosphorIconsStyle.bold),
+            fallbackIcon ?? PhosphorIcons.camera(PhosphorIconsStyle.bold),
             color: AppColors.primary,
           ),
         ),
@@ -62,7 +67,6 @@ class DogPhotoPicker extends StatelessWidget {
                 children: [
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      // side: BorderSide(color: AppColors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                           AppDimensions.radiusSmall,
@@ -70,9 +74,9 @@ class DogPhotoPicker extends StatelessWidget {
                       ),
                     ),
                     onPressed: () => _pick(context),
-                    child: Text(hasPhoto ? 'Change photo' : 'Upload photo'),
+                    child: Text(hasImage ? 'Change photo' : 'Upload photo'),
                   ),
-                  if (hasPhoto)
+                  if (hasImage)
                     TextButton(
                       onPressed: () => onChanged(null),
                       child: Text(
@@ -84,7 +88,7 @@ class DogPhotoPicker extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                'Optional · JPG or PNG, up to 5 MB',
+                helperText,
                 style: AppTextStyles.labelSmall.copyWith(
                   color: AppColors.textSecondary,
                 ),

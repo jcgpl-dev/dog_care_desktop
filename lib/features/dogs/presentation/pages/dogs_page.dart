@@ -2,14 +2,14 @@ import 'dart:math' as math;
 
 import 'package:dog_care_desktop/config/theme/app_colors.dart';
 import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
-import 'package:dog_care_desktop/features/dogs/presentation/widgets/dialogs/confirm_delete_dialog.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/dialogs/confirm_delete_dialog.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/states/empty_state.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/states/error_state.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/states/loading_skeleton.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/table/pagination_bar.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/table/selection_bar.dart';
 import 'package:dog_care_desktop/features/dogs/presentation/widgets/form/dog_form_panel.dart';
 import 'package:dog_care_desktop/features/dogs/presentation/widgets/metrics/dogs_metric_cards.dart';
-import 'package:dog_care_desktop/features/dogs/presentation/widgets/states/dogs_empty_state.dart';
-import 'package:dog_care_desktop/features/dogs/presentation/widgets/states/dogs_error_state.dart';
-import 'package:dog_care_desktop/features/dogs/presentation/widgets/states/dogs_loading_skeleton.dart';
-import 'package:dog_care_desktop/features/dogs/presentation/widgets/table/dogs_pagination_bar.dart';
-import 'package:dog_care_desktop/features/dogs/presentation/widgets/table/dogs_selection_bar.dart';
 import 'package:dog_care_desktop/features/dogs/presentation/widgets/table/dogs_table.dart';
 import 'package:dog_care_desktop/features/dogs/presentation/widgets/toolbar/dogs_toolbar.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +19,6 @@ import '../../domain/entities/dog.dart';
 import '../bloc/dogs_bloc.dart';
 import '../models/dogs_metrics.dart';
 
-/// Composition root for the screen: wires BLoC <-> widgets, owns the
-/// side-panel open/closed state, and asks for confirmation before deleting.
-/// It contains no styling, filtering, or formatting logic.
 class DogsPage extends StatefulWidget {
   const DogsPage({super.key});
 
@@ -41,7 +38,6 @@ class _DogsPageState extends State<DogsPage> {
     _bloc.add(const FetchDogsRequested());
   }
 
-  // ── Panel ─────────────────────────────────────────────────────────────
   void _openPanel([Dog? dog]) => setState(() {
     _dogToEdit = dog;
     _isPanelOpen = true;
@@ -58,7 +54,6 @@ class _DogsPageState extends State<DogsPage> {
     );
   }
 
-  // ── Feedback ──────────────────────────────────────────────────────────
   void _onFeedback(BuildContext context, DogsState state) {
     final feedback = state.feedback!;
     if (feedback.type == DogsFeedbackType.saved) _closePanel();
@@ -75,12 +70,12 @@ class _DogsPageState extends State<DogsPage> {
       );
   }
 
-  // ── Destructive actions always confirm ────────────────────────────────
   Future<void> _confirmDelete(Dog dog) async {
     final confirmed = await showConfirmDeleteDialog(
       context,
       count: 1,
-      singleLabel: dog.petName,
+      itemName: dog.petName,
+      itemTypeLabel: 'dog record',
     );
     if (!confirmed || !mounted) return;
     if (_dogToEdit?.id == dog.id) _closePanel();
@@ -88,12 +83,15 @@ class _DogsPageState extends State<DogsPage> {
   }
 
   Future<void> _confirmDeleteSelected(int count) async {
-    final confirmed = await showConfirmDeleteDialog(context, count: count);
+    final confirmed = await showConfirmDeleteDialog(
+      context,
+      count: count,
+      itemTypeLabel: 'dog record',
+    );
     if (!confirmed || !mounted) return;
     _bloc.add(const DeleteSelectedDogsRequested());
   }
 
-  // ── Build ─────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return BlocListener<DogsBloc, DogsState>(
@@ -163,19 +161,26 @@ class _DogsPageState extends State<DogsPage> {
     switch (state.status) {
       case DogsStatus.initial:
       case DogsStatus.loading:
-        return const DogsLoadingSkeleton();
+        return const LoadingSkeleton(semanticLabel: 'Loading dogs');
 
       case DogsStatus.failure:
-        return DogsErrorState(
+        return ErrorState(
+          title: "Couldn't load dogs",
           message: state.errorMessage ?? 'Something went wrong.',
           onRetry: () => _bloc.add(const FetchDogsRequested()),
         );
 
       case DogsStatus.success:
         if (state.visibleDogs.isEmpty) {
-          return DogsEmptyState(
+          return EmptyState(
             isFiltering: state.query.isFiltering,
-            onRegister: _openPanel,
+            title: 'No dogs registered yet',
+            filteredTitle: 'No dogs match your search',
+            subtitle: 'Register the first dog to start building the record.',
+            filteredSubtitle:
+                'Try a different keyword or clear the sex filter.',
+            actionLabel: 'Register Dog',
+            onActionPressed: _openPanel,
           );
         }
 
@@ -192,10 +197,11 @@ class _DogsPageState extends State<DogsPage> {
                 onToggleSelectAll: () => _bloc.add(const ToggleSelectAllDogs()),
                 onOpen: _openPanel,
                 onDelete: _confirmDelete,
-                footer: DogsPaginationBar(
+                footer: PaginationBar(
                   page: state.page,
                   pageSize: DogsState.pageSize,
                   totalItems: state.visibleDogs.length,
+                  entityName: 'dogs',
                   onPageChanged: (p) => _bloc.add(DogsPageChanged(p)),
                 ),
               ),
@@ -206,8 +212,9 @@ class _DogsPageState extends State<DogsPage> {
                 right: 0,
                 bottom: 72,
                 child: Center(
-                  child: DogsSelectionBar(
+                  child: SelectionBar(
                     count: state.selectedDogIds.length,
+                    itemName: 'dogs selected',
                     onDelete: () =>
                         _confirmDeleteSelected(state.selectedDogIds.length),
                     onClear: () => _bloc.add(const ClearDogSelections()),

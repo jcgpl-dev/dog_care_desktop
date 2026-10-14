@@ -4,17 +4,19 @@ import 'package:dog_care_desktop/config/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class DogsSelectionBar extends StatelessWidget {
-  const DogsSelectionBar({
+class SelectionBar extends StatelessWidget {
+  const SelectionBar({
     super.key,
     required this.count,
     required this.onDelete,
     required this.onClear,
+    this.itemName = 'selected',
   });
 
   final int count;
   final VoidCallback onDelete;
   final VoidCallback onClear;
+  final String itemName;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class DogsSelectionBar extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '$count selected',
+              '$count $itemName',
               style: AppTextStyles.bodyMedium.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -52,7 +54,6 @@ class DogsSelectionBar extends StatelessWidget {
                   ),
                 ),
               ),
-
               icon: Icon(
                 PhosphorIcons.trash(PhosphorIconsStyle.bold),
                 size: 16,

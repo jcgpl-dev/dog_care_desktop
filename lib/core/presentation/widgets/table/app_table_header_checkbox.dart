@@ -2,8 +2,8 @@ import 'package:dog_care_desktop/config/theme/app_colors.dart';
 import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
-class DogsTableHeaderCheckbox extends StatelessWidget {
-  const DogsTableHeaderCheckbox({
+class AppTableHeaderCheckbox extends StatelessWidget {
+  const AppTableHeaderCheckbox({
     super.key,
     required this.isAllSelected,
     required this.isPartiallySelected,
@@ -18,7 +18,6 @@ class DogsTableHeaderCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Muted border colors specifically for header neutrality
     final mutedBorderColor = isDark
         ? AppColors.darkBorder.withValues(alpha: 0.4)
         : AppColors.border.withValues(alpha: 0.6);
@@ -33,7 +32,6 @@ class DogsTableHeaderCheckbox extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall - 2),
           ),
-          // Clean border resolution across interactive states
           side: WidgetStateBorderSide.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return BorderSide.none;
@@ -41,7 +39,6 @@ class DogsTableHeaderCheckbox extends StatelessWidget {
             if (states.contains(WidgetState.hovered)) {
               return BorderSide(color: hoverBorderColor, width: 1.5);
             }
-            // Muted, non-distracting default state
             return BorderSide(color: mutedBorderColor, width: 1.2);
           }),
           fillColor: WidgetStateProperty.resolveWith((states) {
@@ -54,7 +51,6 @@ class DogsTableHeaderCheckbox extends StatelessWidget {
         ),
       ),
       child: Checkbox(
-        // Tristate enables the indeterminate / partial selection state (-)
         tristate: true,
         value: isAllSelected ? true : (isPartiallySelected ? null : false),
         onChanged: (value) => onChanged(value ?? false),

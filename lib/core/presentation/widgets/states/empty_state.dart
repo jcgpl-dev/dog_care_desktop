@@ -5,17 +5,27 @@ import 'package:dog_care_desktop/core/presentation/widgets/buttons/app_button.da
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-/// Two different situations, two different messages:
-/// "nothing yet" (with a CTA) vs "nothing matches" (adjust your search).
-class DogsEmptyState extends StatelessWidget {
-  const DogsEmptyState({
+class EmptyState extends StatelessWidget {
+  const EmptyState({
     super.key,
     required this.isFiltering,
-    required this.onRegister,
+    required this.onActionPressed,
+    this.title = 'No records registered yet',
+    this.filteredTitle = 'No records match your search',
+    this.subtitle = 'Register the first record to start building data.',
+    this.filteredSubtitle = 'Try a different keyword or clear active filters.',
+    this.actionLabel = 'Add New Record',
+    this.icon = PhosphorIconsStyle.bold,
   });
 
   final bool isFiltering;
-  final VoidCallback onRegister;
+  final VoidCallback onActionPressed;
+  final String title;
+  final String filteredTitle;
+  final String subtitle;
+  final String filteredSubtitle;
+  final String actionLabel;
+  final PhosphorIconsStyle icon;
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +37,20 @@ class DogsEmptyState extends StatelessWidget {
           children: [
             Icon(
               isFiltering
-                  ? PhosphorIcons.magnifyingGlass(PhosphorIconsStyle.bold)
-                  : PhosphorIcons.dog(PhosphorIconsStyle.bold),
+                  ? PhosphorIcons.magnifyingGlass(icon)
+                  : PhosphorIcons.folderOpen(icon),
               size: 48,
               color: AppColors.textDisabled,
             ),
             const SizedBox(height: AppDimensions.spacing12),
             Text(
-              isFiltering ? 'No dogs match your search' : 'No dogs registered yet',
+              isFiltering ? filteredTitle : title,
               style: AppTextStyles.titleMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppDimensions.spacing8),
             Text(
-              isFiltering
-                  ? 'Try a different keyword or clear the sex filter.'
-                  : 'Register the first dog to start building the record.',
+              isFiltering ? filteredSubtitle : subtitle,
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -53,9 +61,9 @@ class DogsEmptyState extends StatelessWidget {
               SizedBox(
                 width: 180,
                 child: AppButton(
-                  label: 'Register Dog',
+                  label: actionLabel,
                   variant: AppButtonVariant.primary,
-                  onPressed: onRegister,
+                  onPressed: onActionPressed,
                 ),
               ),
             ],

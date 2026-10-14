@@ -3,9 +3,10 @@
 abstract final class DogIdGenerator {
   static String next() {
     final now = DateTime.now();
-    final suffix = (now.microsecondsSinceEpoch % 1000000)
-        .toString()
-        .padLeft(6, '0');
+    final suffix = (now.microsecondsSinceEpoch % 1000000).toString().padLeft(
+      6,
+      '0',
+    );
     return 'DOG-${now.year}-$suffix';
   }
 }

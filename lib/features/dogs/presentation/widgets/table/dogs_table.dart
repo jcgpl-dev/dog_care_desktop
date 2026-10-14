@@ -1,8 +1,5 @@
 import 'dart:math' as math;
-
-import 'package:dog_care_desktop/config/theme/app_colors.dart';
-import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
-import 'package:dog_care_desktop/config/theme/app_shadows.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/table/app_table_container.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/entities/dog.dart';
@@ -47,73 +44,49 @@ class DogsTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final radius = BorderRadius.circular(AppDimensions.radiusSmall);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: radius,
-        boxShadow: isDark ? AppShadows.cardDark : AppShadows.cardLight,
-        // border: Border.all(
-        //   color: isDark ? AppColors.darkBorder : AppColors.border,
-        // ),
-      ),
-      child: ClipRRect(
-        borderRadius: radius,
-        child: Padding(
-          padding: const EdgeInsets.all(AppDimensions.spacing12),
-          child: Column(
-            children: [
-              Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final width = math.max(
-                      constraints.maxWidth,
-                      DogsTableLayout.minWidth,
-                    );
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SizedBox(
-                        width: width,
-                        child: Column(
-                          children: [
-                            DogsTableHeader(
-                              selectionState: _selectionState,
-                              sortField: sortField,
-                              ascending: ascending,
-                              onSort: onSort,
-                              onToggleSelectAll: onToggleSelectAll,
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: dogs.length,
-                                itemExtent: DogsTableLayout.rowHeight,
-                                itemBuilder: (context, index) {
-                                  final dog = dogs[index];
-                                  return DogsTableRow(
-                                    key: ValueKey(dog.id),
-                                    dog: dog,
-                                    isSelected: selectedDogIds.contains(dog.id),
-                                    onToggleSelection: () =>
-                                        onToggleSelection(dog.id),
-                                    onOpen: () => onOpen(dog),
-                                    onDelete: () => onDelete(dog),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+    return AppTableContainer(
+      footer: footer,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final width = math.max(
+            constraints.maxWidth,
+            DogsTableLayout.minWidth,
+          );
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(
+              width: width,
+              child: Column(
+                children: [
+                  DogsTableHeader(
+                    selectionState: _selectionState,
+                    sortField: sortField,
+                    ascending: ascending,
+                    onSort: onSort,
+                    onToggleSelectAll: onToggleSelectAll,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: dogs.length,
+                      itemExtent: DogsTableLayout.rowHeight,
+                      itemBuilder: (context, index) {
+                        final dog = dogs[index];
+                        return DogsTableRow(
+                          key: ValueKey(dog.id),
+                          dog: dog,
+                          isSelected: selectedDogIds.contains(dog.id),
+                          onToggleSelection: () => onToggleSelection(dog.id),
+                          onOpen: () => onOpen(dog),
+                          onDelete: () => onDelete(dog),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-              if (footer != null) footer!,
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

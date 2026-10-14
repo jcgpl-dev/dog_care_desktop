@@ -2,9 +2,9 @@ import 'package:dog_care_desktop/config/theme/app_colors.dart';
 import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
 import 'package:dog_care_desktop/config/theme/app_text_styles.dart';
 import 'package:dog_care_desktop/core/presentation/widgets/buttons/app_button.dart';
+import 'package:dog_care_desktop/core/presentation/widgets/inputs/app_avatar_picker.dart';
 import 'package:dog_care_desktop/core/presentation/widgets/inputs/app_text_field.dart';
 import 'package:dog_care_desktop/features/dogs/presentation/utils/dog_formatters.dart';
-import 'package:dog_care_desktop/features/dogs/presentation/widgets/form/dog_photo_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -15,13 +15,6 @@ import '../../utils/dog_validators.dart';
 import 'dog_birthdate_field.dart';
 import 'dog_sex_selector.dart';
 
-/// Register / edit panel.
-///
-/// Owns ONLY form state. It never touches the BLoC: it hands a validated
-/// [Dog] to [onSubmit] and the page decides add vs. update. The page closes
-/// it when the save succeeds, so a failed save keeps the user's input.
-///
-/// Give it `key: ValueKey(dog?.id ?? 'new')` so switching records resets it.
 class DogFormPanel extends StatefulWidget {
   const DogFormPanel({
     super.key,
@@ -133,8 +126,8 @@ class _DogFormPanelState extends State<DogFormPanel> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      DogPhotoPicker(
-                        photoPath: _photoUrl,
+                      AppAvatarPicker(
+                        imagePath: _photoUrl,
                         onChanged: (p) => setState(() => _photoUrl = p),
                       ),
                       const SizedBox(height: AppDimensions.spacing24),

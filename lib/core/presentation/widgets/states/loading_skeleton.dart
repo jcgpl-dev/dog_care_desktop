@@ -1,10 +1,15 @@
 import 'package:dog_care_desktop/config/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
-class DogsLoadingSkeleton extends StatelessWidget {
-  const DogsLoadingSkeleton({super.key, this.rows = 8});
+class LoadingSkeleton extends StatelessWidget {
+  const LoadingSkeleton({
+    super.key,
+    this.rows = 8,
+    this.semanticLabel = 'Loading data',
+  });
 
   final int rows;
+  final String semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +17,7 @@ class DogsLoadingSkeleton extends StatelessWidget {
     final bar = (isDark ? Colors.white : Colors.black).withValues(alpha: 0.07);
 
     return Semantics(
-      label: 'Loading dogs',
+      label: semanticLabel,
       child: Column(
         children: [
           for (var i = 0; i < rows; i++)

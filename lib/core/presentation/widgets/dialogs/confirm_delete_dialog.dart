@@ -1,21 +1,23 @@
 import 'package:dog_care_desktop/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-/// Returns true only when the user explicitly confirms.
 Future<bool> showConfirmDeleteDialog(
   BuildContext context, {
   required int count,
-  String? singleLabel,
+  String? itemName,
+  String itemTypeLabel = 'record',
 }) async {
   final isSingle = count == 1;
   final subject = isSingle
-      ? (singleLabel ?? 'this record')
-      : 'these $count records';
+      ? (itemName ?? 'this $itemTypeLabel')
+      : 'these $count $itemTypeLabel${itemTypeLabel.endsWith('s') ? '' : 's'}';
 
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: Text(isSingle ? 'Delete dog record?' : 'Delete $count records?'),
+      title: Text(
+        isSingle ? 'Delete $itemTypeLabel?' : 'Delete $count records?',
+      ),
       content: Text(
         'This will permanently remove $subject. This action cannot be undone.',
       ),

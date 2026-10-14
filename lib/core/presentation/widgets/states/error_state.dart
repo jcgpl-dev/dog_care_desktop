@@ -5,11 +5,19 @@ import 'package:dog_care_desktop/core/presentation/widgets/buttons/app_button.da
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-class DogsErrorState extends StatelessWidget {
-  const DogsErrorState({super.key, required this.message, required this.onRetry});
+class ErrorState extends StatelessWidget {
+  const ErrorState({
+    super.key,
+    required this.message,
+    required this.onRetry,
+    this.title = "Couldn't load data",
+    this.actionLabel = 'Try again',
+  });
 
   final String message;
   final VoidCallback onRetry;
+  final String title;
+  final String actionLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,7 @@ class DogsErrorState extends StatelessWidget {
               color: AppColors.error,
             ),
             const SizedBox(height: AppDimensions.spacing12),
-            Text("Couldn't load dogs", style: AppTextStyles.titleMedium),
+            Text(title, style: AppTextStyles.titleMedium),
             const SizedBox(height: AppDimensions.spacing8),
             Text(
               message,
@@ -38,7 +46,7 @@ class DogsErrorState extends StatelessWidget {
             SizedBox(
               width: 140,
               child: AppButton(
-                label: 'Try again',
+                label: actionLabel,
                 variant: AppButtonVariant.outlined,
                 onPressed: onRetry,
               ),

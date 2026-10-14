@@ -6,27 +6,29 @@ import 'package:dog_care_desktop/config/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-enum _PaginationLayout { wide, medium, narrow }
+enum PaginationLayout { wide, medium, narrow }
 
-class DogsPaginationBar extends StatelessWidget {
-  const DogsPaginationBar({
+class PaginationBar extends StatelessWidget {
+  const PaginationBar({
     super.key,
     required this.page,
     required this.pageSize,
     required this.totalItems,
     required this.onPageChanged,
+    this.entityName = 'entries',
   });
 
-  /// Zero-based.
+  /// Zero-based page index.
   final int page;
   final int pageSize;
   final int totalItems;
   final ValueChanged<int> onPageChanged;
+  final String entityName;
 
-  _PaginationLayout _layoutFor(double width) {
-    if (width >= 560) return _PaginationLayout.wide;
-    if (width >= 380) return _PaginationLayout.medium;
-    return _PaginationLayout.narrow;
+  PaginationLayout _layoutFor(double width) {
+    if (width >= 560) return PaginationLayout.wide;
+    if (width >= 380) return PaginationLayout.medium;
+    return PaginationLayout.narrow;
   }
 
   @override
@@ -45,13 +47,13 @@ class DogsPaginationBar extends StatelessWidget {
         final layout = _layoutFor(constraints.maxWidth);
 
         final summary = switch (layout) {
-          _PaginationLayout.wide =>
-            'Showing $first to $last of $totalItems entries',
-          _PaginationLayout.medium => '$first–$last of $totalItems',
-          _PaginationLayout.narrow => null,
+          PaginationLayout.wide =>
+            'Showing $first to $last of $totalItems $entityName',
+          PaginationLayout.medium => '$first–$last of $totalItems',
+          PaginationLayout.narrow => null,
         };
 
-        final pageLabel = layout == _PaginationLayout.wide
+        final pageLabel = layout == PaginationLayout.wide
             ? 'Page ${page + 1} of $pageCount'
             : '${page + 1} / $pageCount';
 
